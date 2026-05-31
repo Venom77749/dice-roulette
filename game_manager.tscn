@@ -1,0 +1,55 @@
+[gd_scene load_steps=6 format=3 uid="uid://bm3tbkw1qxshg"]
+
+[ext_resource type="Script" uid="uid://ddxe01wwtpo4m" path="res://main.gd" id="1_o2178"]
+[ext_resource type="PackedScene" uid="uid://caut0ksw5mbrn" path="res://Models/gltf/gltf/table_medium.gltf" id="2_d5upp"]
+[ext_resource type="PackedScene" uid="uid://jedaa6omv8pj" path="res://Models/gltf/D6_B_red.gltf" id="3_vk86k"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1bvp3"]
+size = Vector3(5.894287, 0.5, 5.9328003)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lquwl"]
+size = Vector3(0.15, 0.15, 0.15)
+
+[node name="GameManager" type="Node3D"]
+script = ExtResource("1_o2178")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.90796775, 0.41904008, 0, -0.41904008, 0.90796775, -0.018393517, 4.2847567, 4.8272223)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.00055853924, 0.9999999, 0, -0.9999999, -0.00055853924, 0.03772807, 1.3983921, -0.26683378)
+
+[node name="Table" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Table"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.727861, 0)
+shape = SubResource("BoxShape3D_1bvp3")
+
+[node name="table_medium2" parent="Table" instance=ExtResource("2_d5upp")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+
+[node name="PhysicsDice" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.7386923, -0.47412932)
+
+[node name="D6_B_red2" parent="PhysicsDice" instance=ExtResource("3_vk86k")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PhysicsDice"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0034240782, 0.0018572807, 0)
+shape = SubResource("BoxShape3D_lquwl")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -402.0
+offset_top = -173.0
+offset_right = -31.0
+offset_bottom = -26.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Бросок"
