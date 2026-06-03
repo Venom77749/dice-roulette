@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://djy86rlauvp15"]
+[gd_scene load_steps=8 format=3 uid="uid://djy86rlauvp15"]
 
 [ext_resource type="Script" uid="uid://ddxe01wwtpo4m" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://jedaa6omv8pj" path="res://Models/gltf/D6_B_red.gltf" id="2_0xm2m"]
@@ -9,6 +9,12 @@ size = Vector3(5.894287, 0.5, 5.9328003)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lquwl"]
 size = Vector3(0.15, 0.15, 0.15)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2yge"]
+bg_color = Color(2.6471912e-06, 0.63661957, 0.2811313, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bvp3"]
+bg_color = Color(1, 0, 0, 1)
 
 [node name="GameManager" type="Node3D"]
 script = ExtResource("1_ig7tw")
@@ -53,3 +59,35 @@ offset_bottom = -28.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "Бросок"
+
+[node name="PlayerHealthBar" type="ProgressBar" parent="CanvasLayer"]
+offset_left = 54.0
+offset_top = 29.0
+offset_right = 205.0
+offset_bottom = 56.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_h2yge")
+max_value = 20.0
+step = 1.0
+value = 20.0
+
+[node name="AIHealthBar" type="ProgressBar" parent="CanvasLayer"]
+offset_left = 959.0
+offset_top = 29.0
+offset_right = 1110.0
+offset_bottom = 56.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_1bvp3")
+max_value = 20.0
+step = 1.0
+value = 20.0
+
+[node name="PlayerHP" type="Label" parent="CanvasLayer"]
+offset_left = 54.0
+offset_top = 4.0
+offset_right = 204.0
+offset_bottom = 27.0
+
+[node name="AIHP" type="Label" parent="CanvasLayer"]
+offset_left = 959.0
+offset_top = 4.0
+offset_right = 1110.0
+offset_bottom = 27.0
