@@ -23,18 +23,41 @@ var current_round: int = 1
 
 @export var floating_text_scene: PackedScene
 
+@onready var camera: Camera3D = $Camera3D
+@onready var camera_target: Marker3D = $CameraTarget # Ссылка на нашу новую точку
+
+# --- НОВЫЕ ПЕРЕМЕННЫЕ ДЛЯ ЧАСТИЦ ---
+@export var heal_particles_scene: PackedScene
+@export var damage_particles_scene: PackedScene
+
+var default_pos: Vector3
+var default_rot: Vector3
+
 func _ready() -> void:
 	print("--- Игра началась! ---")
 	print("HP Игрока: ", player_hp, " | HP ИИ: ", ai_hp)
+	
+	# Запоминаем стартовую позицию и вращение
+	if camera:
+		default_pos = camera.global_position
+		default_rot = camera.global_rotation
 	
 	update_ui()
 	$CanvasLayer/Button.pressed.connect(_on_button_pressed)
 	
 func _on_button_pressed() -> void:
-	# Проверяем количество живых кубиков в группе "dice"
 	if get_tree().get_nodes_in_group("dice").size() > 0:
 		print("Сначала разберите оставшиеся кубики!")
 		return
+		
+	# --- ПЕРЕМЕЩАЕМ КАМЕРУ К МАРКЕРУ ---
+	if camera and camera_target:
+		var tween = create_tween()
+		tween.set_parallel(true) # Двигаем и вращаем одновременно
+		
+		# Плавный полет к координатам таргета за 1 секунду
+		tween.tween_property(camera, "global_position", camera_target.global_position, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(camera, "global_rotation", camera_target.global_rotation, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 		
 	print("\n=== РАУНД ", current_round, " ===")
 	
@@ -71,6 +94,7 @@ func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
 		
 	# Вызываем спавнер текста над кубиком
 	spawn_floating_text(dice_node.global_position, effect, value)
+	spawn_particles(dice_node.global_position, effect)
 		
 	apply_effect(true, effect, value)
 	
@@ -100,6 +124,7 @@ func ai_turn() -> void:
 	
 	# ИИ тоже вызывает спавнер текста над своим кубиком
 	spawn_floating_text(ai_dice.global_position, ai_dice.hidden_effect, ai_real_value)
+	spawn_particles(ai_dice.global_position, ai_dice.hidden_effect)
 	
 	apply_effect(false, ai_dice.hidden_effect, ai_real_value)
 	ai_dice.queue_free()
@@ -114,7 +139,6 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 		print(target_name, " вытянул пустышку.")
 	elif effect == "heal":
 		if is_player:
-			# Прибавляем здоровье, но не даем ему стать больше 20
 			player_hp = min(player_hp + value, 20)
 		else:
 			ai_hp = min(ai_hp + value, 20)
@@ -129,9 +153,34 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 	update_ui()
 	check_win_condition()
 
+func spawn_particles(pos: Vector3, effect: String) -> void:
+	# Меняем тип на точный, чтобы получить доступ к свойству emitting
+	var particles: CPUParticles3D = null 
+	
+	if effect == "heal" and heal_particles_scene:
+		particles = heal_particles_scene.instantiate()
+	elif effect == "damage" and damage_particles_scene:
+		particles = damage_particles_scene.instantiate()
+		
+	if particles:
+		add_child(particles) 
+		# Шаг 1: Перемещаем невидимый узел в координаты кубика
+		particles.global_position = pos
+		# Шаг 2: Только теперь даем команду на "Взрыв"!
+		particles.emitting = true 
+		
+		get_tree().create_timer(particles.lifetime).timeout.connect(particles.queue_free)
 func end_round() -> void:
 	current_round += 1
 	print("--- Раунд окончен! Нажмите 'Бросок' ---")
+	
+	# --- ВОЗВРАЩАЕМ КАМЕРУ ОБРАТНО ---
+	if camera:
+		var tween = create_tween()
+		tween.set_parallel(true)
+		
+		tween.tween_property(camera, "global_position", default_pos, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(camera, "global_rotation", default_rot, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 
 func update_ui() -> void:
 	player_hp_label.text = "Здоровье Игрока: " + str(player_hp)
@@ -142,7 +191,7 @@ func update_ui() -> void:
 func _process(delta: float) -> void:
 	var hp_difference = player_hp - ai_hp
 	var raw_angle = hp_difference * 4.0
-	var clamped_angle = clamp(raw_angle, -15.0, 15.0)
+	var clamped_angle = clamp(raw_angle, -13.0, 13.0)
 	var target_angle = deg_to_rad(clamped_angle)
 	
 	scale_arm.rotation.x = lerp(scale_arm.rotation.x, target_angle, 6.0 * delta)

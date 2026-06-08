@@ -14,10 +14,13 @@ func setup(effect: String, value: int) -> void:
 	var tween = create_tween()
 	tween.set_parallel(true) 
 	
-	# Поднимаем текст всего на 0.6 метра (было 1.5) за 1.5 секунды (было 1.0)
+	# Поднимаем текст
 	tween.tween_property(self, "position:y", position.y + 0.6, 1.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	
-	# Растворение теперь тоже длится 1.5 секунды, чтобы совпадать с движением
+	# Растворяем сам цветной текст
 	tween.tween_property(self, "modulate:a", 0.0, 1.5).set_ease(Tween.EASE_IN)
+	
+	# Растворяем черную обводку текста
+	tween.tween_property(self, "outline_modulate:a", 0.0, 1.5).set_ease(Tween.EASE_IN)
 	
 	tween.chain().tween_callback(queue_free)

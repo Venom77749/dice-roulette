@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://cda2dkjph4cjr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_natpm"]
+transparency = 1
+vertex_color_use_as_albedo = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_oy6jy"]
+
+[sub_resource type="Curve" id="Curve_iimgi"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.9951691, 0), 0.39871585, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_7n2ut"]
+offsets = PackedFloat32Array(0, 0.98)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="HealParticles" type="CPUParticles3D"]
+material_override = SubResource("StandardMaterial3D_natpm")
+emitting = false
+amount = 20
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0
+mesh = SubResource("QuadMesh_oy6jy")
+direction = Vector3(0, 1, 0)
+gravity = Vector3(0, -1, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 1.2
+scale_amount_min = 0.15
+scale_amount_max = 0.15
+scale_amount_curve = SubResource("Curve_iimgi")
+color = Color(0.8, 0.101960786, 0.101960786, 1)
+color_ramp = SubResource("Gradient_7n2ut")

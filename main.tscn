@@ -1,12 +1,14 @@
-[gd_scene load_steps=47 format=4 uid="uid://djy86rlauvp15"]
+[gd_scene load_steps=49 format=4 uid="uid://djy86rlauvp15"]
 
 [ext_resource type="Script" uid="uid://ddxe01wwtpo4m" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://caut0ksw5mbrn" path="res://Models/gltf/gltf/table_medium.gltf" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://5xj2w51u4j8w" path="res://physics_dice.tscn" id="2_lquwl"]
 [ext_resource type="PackedScene" uid="uid://d24g1p26set0d" path="res://floating_text.tscn" id="3_272bh"]
 [ext_resource type="FontFile" uid="uid://b1a3sjwqi25vk" path="res://TrueType (.ttf)/Kurland-Regular.ttf" id="4_7mycd"]
+[ext_resource type="PackedScene" uid="uid://x64jbba22iyr" path="res://particles_heal.tscn" id="4_kek77"]
 [ext_resource type="Texture2D" uid="uid://cggav1mkrk7fq" path="res://baseColor.jpg" id="4_lquwl"]
 [ext_resource type="Texture2D" uid="uid://b84vra4mwvult" path="res://baseColor.jpg.jpg" id="5_7mycd"]
+[ext_resource type="PackedScene" uid="uid://cda2dkjph4cjr" path="res://particles_damage.tscn" id="5_kek77"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1bvp3"]
 size = Vector3(5.894287, 0.5, 5.9328003)
@@ -471,9 +473,11 @@ data = PackedVector3Array(0.0067999996, -0.018199999, 0.30179998, -0.0381, -0.02
 script = ExtResource("1_ig7tw")
 dice_scene = ExtResource("2_lquwl")
 floating_text_scene = ExtResource("3_272bh")
+heal_particles_scene = ExtResource("4_kek77")
+damage_particles_scene = ExtResource("5_kek77")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.8028071, 0.59623885, 0, -0.59623885, 0.8028071, 0.57875896, 1.7082864, 1.5732713)
+transform = Transform3D(1, 0, 0, 0, 0.78410536, 0.6206278, 0, -0.6206278, 0.78410536, 0.57875896, 2.0741458, 2.0821667)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.00055853924, 0.9999999, 0, -0.9999999, -0.00055853924, 0.03772807, 1.3983921, -0.26683378)
@@ -656,3 +660,6 @@ shape = SubResource("ConcavePolygonShape3D_w48qg")
 
 [node name="SpawnPoint" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3299513, 1.5720257, -1.7730979)
+
+[node name="CameraTarget" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.45465922, 0.8906655, 0, -0.8906655, 0.45465922, 0.57875896, 1.7232959, -0.33049357)
