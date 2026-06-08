@@ -14,3 +14,11 @@ config/name="Dice roulette"
 run/main_scene="uid://djy86rlauvp15"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[gui]
+
+theme/custom_font="uid://b1a3sjwqi25vk"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0

@@ -1,8 +1,10 @@
-[gd_scene load_steps=45 format=4 uid="uid://djy86rlauvp15"]
+[gd_scene load_steps=47 format=4 uid="uid://djy86rlauvp15"]
 
 [ext_resource type="Script" uid="uid://ddxe01wwtpo4m" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://caut0ksw5mbrn" path="res://Models/gltf/gltf/table_medium.gltf" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://5xj2w51u4j8w" path="res://physics_dice.tscn" id="2_lquwl"]
+[ext_resource type="PackedScene" uid="uid://d24g1p26set0d" path="res://floating_text.tscn" id="3_272bh"]
+[ext_resource type="FontFile" uid="uid://b1a3sjwqi25vk" path="res://TrueType (.ttf)/Kurland-Regular.ttf" id="4_7mycd"]
 [ext_resource type="Texture2D" uid="uid://cggav1mkrk7fq" path="res://baseColor.jpg" id="4_lquwl"]
 [ext_resource type="Texture2D" uid="uid://b84vra4mwvult" path="res://baseColor.jpg.jpg" id="5_7mycd"]
 
@@ -468,6 +470,7 @@ data = PackedVector3Array(0.0067999996, -0.018199999, 0.30179998, -0.0381, -0.02
 [node name="GameManager" type="Node3D"]
 script = ExtResource("1_ig7tw")
 dice_scene = ExtResource("2_lquwl")
+floating_text_scene = ExtResource("3_272bh")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.8028071, 0.59623885, 0, -0.59623885, 0.8028071, 0.57875896, 1.7082864, 1.5732713)
@@ -525,6 +528,7 @@ offset_left = 54.0
 offset_top = 4.0
 offset_right = 204.0
 offset_bottom = 27.0
+theme_override_fonts/font = ExtResource("4_7mycd")
 
 [node name="AIHP" type="Label" parent="CanvasLayer"]
 offset_left = 959.0

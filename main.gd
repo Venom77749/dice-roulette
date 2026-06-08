@@ -21,6 +21,8 @@ enum DiceType { GOOD, BAD }
 @export var dice_scene: PackedScene 
 var current_round: int = 1
 
+@export var floating_text_scene: PackedScene
+
 func _ready() -> void:
 	print("--- Игра началась! ---")
 	print("HP Игрока: ", player_hp, " | HP ИИ: ", ai_hp)
@@ -64,13 +66,14 @@ func _on_button_pressed() -> void:
 # --- ЛОГИКА ХОДОВ ---
 
 func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
-	# Ход игрока: мгновенно исключаем кубик из группы
 	if dice_node.is_in_group("dice"):
 		dice_node.remove_from_group("dice")
 		
+	# Вызываем спавнер текста над кубиком
+	spawn_floating_text(dice_node.global_position, effect, value)
+		
 	apply_effect(true, effect, value)
 	
-	# Смотрим, осталось ли что-то на столе для хода ИИ
 	var dice_left = get_tree().get_nodes_in_group("dice")
 	if dice_left.size() > 0:
 		ai_turn()
@@ -83,16 +86,24 @@ func ai_turn() -> void:
 		end_round()
 		return
 		
-	# ИИ выбирает случайный кубик из тех, что реально остались в группе
+	# ИИ выбирает случайный кубик из тех, что реально остались
 	var random_index = randi() % dice_left.size()
 	var ai_dice = dice_left[random_index]
 	
-	# Исключаем его из группы, применяем эффект и удаляем со сцены
+	# Исключаем его из группы
 	ai_dice.remove_from_group("dice")
-	apply_effect(false, ai_dice.hidden_effect, ai_dice.effect_value)
+	
+	# Вычисляем реальное значение выпавшей грани для ИИ
+	var ai_real_value = 0
+	if ai_dice.hidden_effect != "neutral":
+		ai_real_value = ai_dice.get_top_number()
+	
+	# ИИ тоже вызывает спавнер текста над своим кубиком
+	spawn_floating_text(ai_dice.global_position, ai_dice.hidden_effect, ai_real_value)
+	
+	apply_effect(false, ai_dice.hidden_effect, ai_real_value)
 	ai_dice.queue_free()
 	
-	# Если ИИ забрал самый последний кубик — завершаем раунд
 	if get_tree().get_nodes_in_group("dice").size() == 0:
 		end_round()
 
@@ -103,10 +114,11 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 		print(target_name, " вытянул пустышку.")
 	elif effect == "heal":
 		if is_player:
-			player_hp += value
+			# Прибавляем здоровье, но не даем ему стать больше 20
+			player_hp = min(player_hp + value, 20)
 		else:
-			ai_hp += value
-		print(target_name, " лечится: +", value, " HP")
+			ai_hp = min(ai_hp + value, 20)
+		print(target_name, " лечится (выпало: +", value, ")")
 	elif effect == "damage":
 		if is_player:
 			player_hp -= value
@@ -136,6 +148,20 @@ func _process(delta: float) -> void:
 	scale_arm.rotation.x = lerp(scale_arm.rotation.x, target_angle, 6.0 * delta)
 	left_weight.rotation.x = -scale_arm.rotation.x
 	right_weight.rotation.x = -scale_arm.rotation.x
+
+func spawn_floating_text(pos: Vector3, effect: String, value: int) -> void:
+	if floating_text_scene:
+		# Создаем копию сцены
+		var ft = floating_text_scene.instantiate()
+		
+		# Добавляем ее в игровой мир
+		add_child(ft)
+		
+		# Ставим текст в координаты кубика, но на 0.5 метра выше
+		ft.global_position = pos + Vector3(0, 0.5, 0)
+		
+		# Запускаем нашу анимацию из скрипта floating_text.gd
+		ft.setup(effect, value)
 
 func check_win_condition() -> void:
 	if player_hp <= 0:
