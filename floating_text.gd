@@ -7,6 +7,12 @@ func setup(effect: String, value: int) -> void:
 	elif effect == "damage":
 		text = "-" + str(value)
 		modulate = Color(0.8, 0.1, 0.1)
+	elif effect == "armor":
+		text = "🛡️" + str(value)
+		modulate = Color(0.3, 0.5, 0.9) # Синий
+	elif effect == "poison":
+		text = "☠️" + str(value)
+		modulate = Color(0.6, 0.2, 0.8) # Фиолетовый
 	else:
 		text = "Пустышка"
 		modulate = Color(0.6, 0.6, 0.6)

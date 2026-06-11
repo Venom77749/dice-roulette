@@ -8,11 +8,16 @@ func setup(round_num: int) -> void:
 	if round_num == 1:
 		hidden_effect = "neutral"
 	else:
-		# Эффект (яд/лечение) все еще определяется случайно при спавне
-		if randf() > 0.5:
+		# Рандомизируем все 4 эффекта
+		var roll = randf()
+		if roll <= 0.25:
 			hidden_effect = "heal"
-		else:
+		elif roll <= 0.50:
 			hidden_effect = "damage"
+		elif roll <= 0.75:
+			hidden_effect = "armor"
+		else:
+			hidden_effect = "poison"
 
 # Функция, которая определяет, какая грань смотрит вверх
 func get_top_number() -> int:

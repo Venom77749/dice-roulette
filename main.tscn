@@ -540,6 +540,18 @@ offset_top = 4.0
 offset_right = 1110.0
 offset_bottom = 27.0
 
+[node name="PlayerEffects" type="Label" parent="CanvasLayer"]
+offset_left = 54.0
+offset_top = 68.0
+offset_right = 205.0
+offset_bottom = 90.0
+
+[node name="AIEffects" type="Label" parent="CanvasLayer"]
+offset_left = 959.0
+offset_top = 68.0
+offset_right = 1109.0
+offset_bottom = 90.0
+
 [node name="весы" type="Node3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -1.5144948, 0.73466283, -1.8248546)
 

@@ -3,6 +3,10 @@ extends Node3D
 var player_hp: int = 20
 var ai_hp: int = 20
 var is_player_turn: bool = true
+var player_armor: int = 0
+var ai_armor: int = 0
+var player_poison: int = 0
+var ai_poison: int = 0
 
 enum DiceType { GOOD, BAD }
 
@@ -30,6 +34,9 @@ var current_round: int = 1
 # --- НОВЫЕ ПЕРЕМЕННЫЕ ДЛЯ ЧАСТИЦ ---
 @export var heal_particles_scene: PackedScene
 @export var damage_particles_scene: PackedScene
+
+@onready var player_effects_label: Label = $CanvasLayer/PlayerEffects
+@onready var ai_effects_label: Label = $CanvasLayer/AIEffects
 
 var default_pos: Vector3
 var default_rot: Vector3
@@ -64,6 +71,13 @@ func _on_button_pressed() -> void:
 		tween.tween_property(camera, "global_rotation", camera_target.global_rotation, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 		
 	print("\n=== РАУНД ", current_round, " ===")
+	
+	# --- ПРИМЕНЯЕМ ЯД В НАЧАЛЕ РАУНДА ---
+	process_poison()
+	
+	# Если после применения яда кто-то умер, прерываем раздачу кубиков
+	if player_hp <= 0 or ai_hp <= 0:
+		return 
 	
 	var dice_count = current_round + randi_range(1, 2)
 	print("На стол падает кубиков: ", dice_count)
@@ -166,18 +180,64 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 	
 	if effect == "neutral":
 		print(target_name, " вытянул пустышку.")
+		
 	elif effect == "heal":
 		if is_player:
 			player_hp = min(player_hp + value, 20)
 		else:
 			ai_hp = min(ai_hp + value, 20)
 		print(target_name, " лечится (выпало: +", value, ")")
-	elif effect == "damage":
+		
+	elif effect == "armor":
 		if is_player:
-			player_hp -= value
+			player_armor += value
 		else:
-			ai_hp -= value
-		print(target_name, " получает урон: -", value, " HP")
+			ai_armor += value
+		print(target_name, " получает броню: +", value)
+		
+	elif effect == "poison":
+		if is_player:
+			player_poison += value # Яд может накапливаться!
+		else:
+			ai_poison += value
+		print(target_name, " отравлен! Уровень яда: ", value)
+		
+	elif effect == "damage":
+		var actual_damage = value
+		
+		# Логика поглощения урона для игрока
+		if is_player:
+			if player_armor > 0:
+				var absorbed = min(player_armor, actual_damage)
+				player_armor -= absorbed
+				actual_damage -= absorbed
+				print("🛡️ Броня Игрока поглотила ", absorbed, " урона. Осталось брони: ", player_armor)
+			player_hp -= actual_damage
+			
+		# Логика поглощения урона для ИИ
+		else:
+			if ai_armor > 0:
+				var absorbed = min(ai_armor, actual_damage)
+				ai_armor -= absorbed
+				actual_damage -= absorbed
+				print("🛡️ Броня ИИ поглотила ", absorbed, " урона. Осталось брони: ", ai_armor)
+			ai_hp -= actual_damage
+			
+		print(target_name, " получает урон: -", actual_damage, " HP")
+		
+	update_ui()
+	check_win_condition()
+
+func process_poison() -> void:
+	if player_poison > 0:
+		print("\nЯд действует на Игрока: -", player_poison, " HP")
+		player_hp -= player_poison # Яд наносит прямой урон (игнорируя броню)
+		player_poison -= 1
+		
+	if ai_poison > 0:
+		print("\n☠️ Яд действует на ИИ: -", ai_poison, " HP")
+		ai_hp -= ai_poison
+		ai_poison -= 1
 		
 	update_ui()
 	check_win_condition()
@@ -212,10 +272,33 @@ func end_round() -> void:
 		tween.tween_property(camera, "global_rotation", default_rot, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 
 func update_ui() -> void:
+	# Обновляем базовое здоровье
 	player_hp_label.text = "Здоровье Игрока: " + str(player_hp)
 	ai_hp_label.text = "Здоровье ИИ: " + str(ai_hp)
 	player_hp_bar.value = player_hp
 	ai_hp_bar.value = ai_hp
+
+	# --- СОБИРАЕМ ЭФФЕКТЫ ИГРОКА ---
+	var p_effects_text = ""
+	
+	if player_armor > 0:
+		p_effects_text += "🛡️ " + str(player_armor) + "   "
+	if player_poison > 0:
+		p_effects_text += "☠️ " + str(player_poison) + "   "
+		
+	# Применяем собранную строку к тексту
+	player_effects_label.text = p_effects_text
+
+	# --- СОБИРАЕМ ЭФФЕКТЫ ИИ ---
+	var ai_effects_text = ""
+	
+	if ai_armor > 0:
+		ai_effects_text += "🛡️ " + str(ai_armor) + "   "
+	if ai_poison > 0:
+		ai_effects_text += "☠️ " + str(ai_poison) + "   "
+		
+	# Применяем собранную строку к тексту
+	ai_effects_label.text = ai_effects_text
 
 func _process(delta: float) -> void:
 	var hp_difference = player_hp - ai_hp
