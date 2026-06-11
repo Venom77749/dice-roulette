@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://d24g1p26set0d"]
+
+[ext_resource type="FontFile" uid="uid://b1a3sjwqi25vk" path="res://TrueType (.ttf)/Kurland-Regular.ttf" id="1_58iww"]
+[ext_resource type="Script" uid="uid://bcam4chmjb0f8" path="res://Scripts/floating_text.gd" id="2_ds5wh"]
+
+[node name="Label3D" type="Label3D"]
+billboard = 1
+no_depth_test = true
+text = "писят два"
+font = ExtResource("1_58iww")
+script = ExtResource("2_ds5wh")
