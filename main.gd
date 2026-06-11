@@ -2,6 +2,7 @@ extends Node3D
 
 var player_hp: int = 20
 var ai_hp: int = 20
+var is_player_turn: bool = true
 
 enum DiceType { GOOD, BAD }
 
@@ -50,6 +51,9 @@ func _on_button_pressed() -> void:
 		print("Сначала разберите оставшиеся кубики!")
 		return
 		
+	# Возвращаем ход игроку, когда появляются новые кубики
+	is_player_turn = true
+		
 	# --- ПЕРЕМЕЩАЕМ КАМЕРУ К МАРКЕРУ ---
 	if camera and camera_target:
 		var tween = create_tween()
@@ -89,6 +93,13 @@ func _on_button_pressed() -> void:
 # --- ЛОГИКА ХОДОВ ---
 
 func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
+	# Если сейчас ход ИИ — полностью игнорируем клик игрока
+	if not is_player_turn:
+		return
+		
+	# Как только игрок сделал выбор, забираем у него право хода
+	is_player_turn = false
+	
 	if dice_node.is_in_group("dice"):
 		dice_node.remove_from_group("dice")
 		
@@ -98,6 +109,9 @@ func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
 		
 	apply_effect(true, effect, value)
 	
+	# ТЕПЕРЬ КУБИК УНИЧТОЖАЕТСЯ ЗДЕСЬ
+	dice_node.queue_free()
+	
 	var dice_left = get_tree().get_nodes_in_group("dice")
 	if dice_left.size() > 0:
 		ai_turn()
@@ -106,6 +120,18 @@ func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
 
 func ai_turn() -> void:
 	var dice_left = get_tree().get_nodes_in_group("dice")
+	if dice_left.size() == 0:
+		end_round()
+		return
+		
+	# --- ДОБАВЛЯЕМ ЗАДЕРЖКУ ---
+	# Заставляем ИИ "подумать" случайное время от 1 до 2 секунд для реалистичности
+	var think_time = randf_range(1.0, 2.0)
+	await get_tree().create_timer(think_time).timeout
+	
+	# ВАЖНО: После задержки нужно заново собрать оставшиеся кубики!
+	# За это время состояние игры могло измениться.
+	dice_left = get_tree().get_nodes_in_group("dice")
 	if dice_left.size() == 0:
 		end_round()
 		return
@@ -131,6 +157,9 @@ func ai_turn() -> void:
 	
 	if get_tree().get_nodes_in_group("dice").size() == 0:
 		end_round()
+	else:
+		# Если кубики еще есть, возвращаем ход игроку!
+		is_player_turn = true
 
 func apply_effect(is_player: bool, effect: String, value: int) -> void:
 	var target_name = "Игрок" if is_player else "ИИ"

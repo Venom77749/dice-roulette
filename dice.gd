@@ -61,5 +61,5 @@ func _input_event(camera: Node, event: InputEvent, event_position: Vector3, norm
 			
 		selected.emit(self, hidden_effect, real_value)
 		
-		input_ray_pickable = false
-		queue_free()
+		# input_ray_pickable = false
+		# queue_free()
