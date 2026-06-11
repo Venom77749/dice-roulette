@@ -17,5 +17,7 @@ script = ExtResource("1_glvoe")
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0034240782, 0.0018572807, 0)
+transform = Transform3D(1.05, 0, 0, 0, 1.05, 0, 0, 0, 1.05, -0.0027505606, 0.0018572807, 0)
 shape = SubResource("BoxShape3D_lquwl")
+
+[editable path="D6_B_red2"]
