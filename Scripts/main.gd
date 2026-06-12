@@ -31,6 +31,9 @@ var current_round: int = 1
 @onready var camera: Camera3D = $Camera3D
 @onready var camera_target: Marker3D = $CameraTarget # Ссылка на нашу новую точку
 
+var mouse_sensitivity: float = 0.003 # Чувствительность мыши
+var is_rmb_pressed: bool = false # Флаг: зажата ли правая кнопка
+
 # --- НОВЫЕ ПЕРЕМЕННЫЕ ДЛЯ ЧАСТИЦ ---
 @export var heal_particles_scene: PackedScene
 @export var damage_particles_scene: PackedScene
@@ -282,6 +285,30 @@ func end_round() -> void:
 		
 		tween.tween_property(camera, "global_position", default_pos, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 		tween.tween_property(camera, "global_rotation", default_rot, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+
+func _input(event: InputEvent) -> void:
+	# 1. Отслеживаем нажатие и отпускание Правой Кнопки Мыши (ПКМ)
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			is_rmb_pressed = event.pressed
+			
+			# Прячем курсор, пока крутим камеру (чтобы он не улетал за экран)
+			if is_rmb_pressed:
+				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			else:
+				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+	# 2. Если мышь двигается И правая кнопка зажата -> крутим камеру
+	if event is InputEventMouseMotion and is_rmb_pressed:
+		if camera:
+			# Вращаем влево/вправо (вокруг оси Y)
+			camera.rotation.y -= event.relative.x * mouse_sensitivity
+			
+			# Вращаем вверх/вниз (вокруг оси X)
+			camera.rotation.x -= event.relative.y * mouse_sensitivity
+			
+			# ОГРАНИЧИТЕЛЬ: не даем камере сделать "сальто" (ограничиваем наклон)
+			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 
 func update_ui() -> void:
 	# Обновляем базовое здоровье

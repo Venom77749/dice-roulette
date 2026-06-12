@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=4 uid="uid://djy86rlauvp15"]
+[gd_scene load_steps=69 format=4 uid="uid://djy86rlauvp15"]
 
 [ext_resource type="Script" uid="uid://ddxe01wwtpo4m" path="res://Scripts/main.gd" id="1_hptm8"]
 [ext_resource type="PackedScene" uid="uid://5xj2w51u4j8w" path="res://Scenes/physics_dice.tscn" id="2_d1ilt"]
@@ -765,9 +765,15 @@ tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = PackedFloat32Array(0, 1, 0.040320877, -0.0048764297, -0.12135681, 0.99177766, 0.4, 1, -0.1541253, -0.029445987, -0.09775112, 0.982763, 0.7, 1, -0.30264506, 0.11751303, -0.3904178, 0.86149323, 0.9, 1, -0.27437103, 0.09069325, -0.32103324, 0.9019052, 1.4, 1, 0.020593442, 0.016067943, -0.19791895, 0.9798703)
 
+[sub_resource type="Animation" id="Animation_b3802"]
+resource_name = "discipline"
+length = 0.3
+loop_mode = 1
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_k12tt"]
 _data = {
 &"RESET": SubResource("Animation_k12tt"),
+&"discipline": SubResource("Animation_b3802"),
 &"idle": SubResource("Animation_h1bgf"),
 &"take": SubResource("Animation_wsu2k")
 }
@@ -1049,16 +1055,16 @@ bones/6/name = "upper_arm.L"
 bones/6/parent = 5
 bones/6/rest = Transform3D(-0.4061951, 0.3263735, 0.85351384, -0.71532035, 0.46764863, -0.5192509, -0.5686143, -0.821453, 0.04350501, -0.040552475, 0.28745168, -0.04885284)
 bones/6/enabled = true
-bones/6/position = Vector3(-0.040552408, 0.28745183, -0.048851617)
+bones/6/position = Vector3(-0.040552422, 0.2874518, -0.048851613)
 bones/6/rotation = Quaternion(-0.2514202, 0.6413701, -0.5763972, 0.43954372)
-bones/6/scale = Vector3(1.000002, 1.0000114, 0.9999947)
+bones/6/scale = Vector3(1.0000007, 1.0000114, 0.9999969)
 bones/7/name = "forearm.L"
 bones/7/parent = 6
 bones/7/rest = Transform3D(0.9933911, 0.09933867, 0.057496253, -0.09898424, 0.99504846, -0.008986762, -0.05810429, 0.0032361464, 0.99830514, -4.353933e-08, 0.40217522, -1.268927e-08)
 bones/7/enabled = true
-bones/7/position = Vector3(-1.7836962e-07, 0.40217483, 5.486259e-08)
+bones/7/position = Vector3(-1.423053e-07, 0.40217483, -3.233285e-08)
 bones/7/rotation = Quaternion(-0.012883151, 0.051367182, -0.16746415, 0.9844548)
-bones/7/scale = Vector3(1.0000038, 1.000003, 0.9999977)
+bones/7/scale = Vector3(1.0000013, 1.0000107, 0.9999911)
 bones/8/name = "hand.L"
 bones/8/parent = 7
 bones/8/rest = Transform3D(0.9704975, 0.24032466, -0.019459093, -0.24111117, 0.9672934, -0.07879512, -0.00011375733, 0.08116226, 0.996701, 8.6613e-08, 0.37050238, -3.4924597e-09)
