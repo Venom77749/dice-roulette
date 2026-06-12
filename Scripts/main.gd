@@ -1,7 +1,7 @@
 extends Node3D
 
-var player_hp: int = 20
-var ai_hp: int = 20
+var player_hp: int = 40
+var ai_hp: int = 40
 var is_player_turn: bool = true
 var player_armor: int = 0
 var ai_armor: int = 0
@@ -37,6 +37,8 @@ var current_round: int = 1
 
 @onready var player_effects_label: Label = $CanvasLayer/PlayerEffects
 @onready var ai_effects_label: Label = $CanvasLayer/AIEffects
+
+@onready var ai_animator: AnimationPlayer = $skeleton/AnimationPlayer
 
 var default_pos: Vector3
 var default_rot: Vector3
@@ -138,42 +140,52 @@ func ai_turn() -> void:
 		end_round()
 		return
 		
-	# --- ДОБАВЛЯЕМ ЗАДЕРЖКУ ---
-	# Заставляем ИИ "подумать" случайное время от 1 до 2 секунд для реалистичности
+	# ИИ "думает" перед ходом
 	var think_time = randf_range(1.0, 2.0)
 	await get_tree().create_timer(think_time).timeout
 	
-	# ВАЖНО: После задержки нужно заново собрать оставшиеся кубики!
-	# За это время состояние игры могло измениться.
+	# Снова проверяем кубики после задержки
 	dice_left = get_tree().get_nodes_in_group("dice")
 	if dice_left.size() == 0:
 		end_round()
 		return
 		
-	# ИИ выбирает случайный кубик из тех, что реально остались
+	# ИИ выбирает кубик
 	var random_index = randi() % dice_left.size()
 	var ai_dice = dice_left[random_index]
-	
-	# Исключаем его из группы
 	ai_dice.remove_from_group("dice")
 	
-	# Вычисляем реальное значение выпавшей грани для ИИ
+	# --- МАГИЯ АНИМАЦИИ НАЧИНАЕТСЯ ЗДЕСЬ ---
+	if ai_animator:
+		ai_animator.play("take") # Скелет начинает тянуться к столу
+		
+		# Ждем 0.8 секунд (момент, когда его рука опускается к кубику)
+		# Если в твоей анимации он касается стола раньше/позже - поменяй эту цифру!
+		await get_tree().create_timer(0.8).timeout
+	
+	# Вычисляем значение (рука коснулась стола, кубик срабатывает)
 	var ai_real_value = 0
 	if ai_dice.hidden_effect != "neutral":
 		ai_real_value = ai_dice.get_top_number()
 	
-	# ИИ тоже вызывает спавнер текста над своим кубиком
 	spawn_floating_text(ai_dice.global_position, ai_dice.hidden_effect, ai_real_value)
 	spawn_particles(ai_dice.global_position, ai_dice.hidden_effect)
 	
 	apply_effect(false, ai_dice.hidden_effect, ai_real_value)
-	ai_dice.queue_free()
+	ai_dice.queue_free() # Кубик исчезает прямо из-под руки
 	
+	# Ждем, пока скелет выпрямится (доиграет анимацию `take`)
+	if ai_animator:
+		# Если общая длина твоей анимации take = 1.5 сек, 
+		# а мы уже подождали 0.8 сек, значит осталось дождаться еще 0.7 сек:
+		await get_tree().create_timer(0.7).timeout 
+		ai_animator.play("idle") # Возвращаем скелета в расслабленную стойку
+	
+	# Проверяем, остались ли еще кубики
 	if get_tree().get_nodes_in_group("dice").size() == 0:
 		end_round()
 	else:
-		# Если кубики еще есть, возвращаем ход игроку!
-		is_player_turn = true
+		is_player_turn = true # Возвращаем ход игроку
 
 func apply_effect(is_player: bool, effect: String, value: int) -> void:
 	var target_name = "Игрок" if is_player else "ИИ"
