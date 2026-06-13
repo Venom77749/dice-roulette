@@ -1,7 +1,7 @@
 extends Node3D
 
-var player_hp: int = 40
-var ai_hp: int = 40
+var player_hp: int = 20
+var ai_hp: int = 20
 var is_player_turn: bool = true
 var player_armor: int = 0
 var ai_armor: int = 0
@@ -42,6 +42,15 @@ var is_rmb_pressed: bool = false # Флаг: зажата ли правая кн
 @onready var ai_effects_label: Label = $CanvasLayer/AIEffects
 
 @onready var ai_animator: AnimationPlayer = $skeleton/AnimationPlayer
+
+# --- СНАРЯДЫ (ДУШИ) ---
+@export var soul_heal: PackedScene
+@export var soul_damage: PackedScene
+@export var soul_poison: PackedScene
+@export var soul_armor: PackedScene
+
+# Переменная для "вздрагивания" весов при ударе
+var scale_jolt: float = 0.0
 
 var default_pos: Vector3
 var default_rot: Vector3
@@ -112,24 +121,21 @@ func _on_button_pressed() -> void:
 # --- ЛОГИКА ХОДОВ ---
 
 func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
-	# Если сейчас ход ИИ — полностью игнорируем клик игрока
 	if not is_player_turn:
 		return
 		
-	# Как только игрок сделал выбор, забираем у него право хода
 	is_player_turn = false
 	
 	if dice_node.is_in_group("dice"):
 		dice_node.remove_from_group("dice")
 		
-	# Вызываем спавнер текста над кубиком
-	spawn_floating_text(dice_node.global_position, effect, value)
-	spawn_particles(dice_node.global_position, effect)
-		
-	apply_effect(true, effect, value)
+	# Запоминаем позицию до удаления кубика
+	var start_pos = dice_node.global_position
 	
-	# ТЕПЕРЬ КУБИК УНИЧТОЖАЕТСЯ ЗДЕСЬ
+	# СРАЗУ удаляем кубик со стола
 	dice_node.queue_free()
+	
+	await shoot_soul_to_scales(start_pos, true, effect, value)
 	
 	var dice_left = get_tree().get_nodes_in_group("dice")
 	if dice_left.size() > 0:
@@ -143,52 +149,49 @@ func ai_turn() -> void:
 		end_round()
 		return
 		
-	# ИИ "думает" перед ходом
 	var think_time = randf_range(1.0, 2.0)
 	await get_tree().create_timer(think_time).timeout
 	
-	# Снова проверяем кубики после задержки
 	dice_left = get_tree().get_nodes_in_group("dice")
 	if dice_left.size() == 0:
 		end_round()
 		return
 		
-	# ИИ выбирает кубик
 	var random_index = randi() % dice_left.size()
 	var ai_dice = dice_left[random_index]
 	ai_dice.remove_from_group("dice")
 	
-	# --- МАГИЯ АНИМАЦИИ НАЧИНАЕТСЯ ЗДЕСЬ ---
+	# Анимация: скелет тянется к кубику
 	if ai_animator:
-		ai_animator.play("take") # Скелет начинает тянуться к столу
-		
-		# Ждем 0.8 секунд (момент, когда его рука опускается к кубику)
-		# Если в твоей анимации он касается стола раньше/позже - поменяй эту цифру!
-		await get_tree().create_timer(0.8).timeout
+		ai_animator.play("take")
+		await get_tree().create_timer(0.35).timeout
 	
-	# Вычисляем значение (рука коснулась стола, кубик срабатывает)
 	var ai_real_value = 0
 	if ai_dice.hidden_effect != "neutral":
 		ai_real_value = ai_dice.get_top_number()
 	
-	spawn_floating_text(ai_dice.global_position, ai_dice.hidden_effect, ai_real_value)
-	spawn_particles(ai_dice.global_position, ai_dice.hidden_effect)
+	# Запоминаем позицию и эффект до удаления
+	var start_pos = ai_dice.global_position
+	var effect_type = ai_dice.hidden_effect
 	
-	apply_effect(false, ai_dice.hidden_effect, ai_real_value)
-	ai_dice.queue_free() # Кубик исчезает прямо из-под руки
+	# 1. Кубик мгновенно исчезает из-под руки
+	ai_dice.queue_free() 
 	
-	# Ждем, пока скелет выпрямится (доиграет анимацию `take`)
+	# 2. СРАЗУ запускаем снаряд в чашу.
+	# Код "застынет" на этой строке на 0.8 сек (пока летит душа).
+	# Но AnimationPlayer на фоне продолжит проигрывать анимацию "take", 
+	# и рука скелета плавно вернется в исходное положение сама!
+	await shoot_soul_to_scales(start_pos, false, effect_type, ai_real_value)
+	
+	# 3. Душа врезалась в весы. Переводим скелета в обычную стойку.
 	if ai_animator:
-		# Если общая длина твоей анимации take = 1.5 сек, 
-		# а мы уже подождали 0.8 сек, значит осталось дождаться еще 0.7 сек:
-		await get_tree().create_timer(0.7).timeout 
-		ai_animator.play("idle") # Возвращаем скелета в расслабленную стойку
+		ai_animator.play("idle")
 	
-	# Проверяем, остались ли еще кубики
+	# Передаем ход дальше
 	if get_tree().get_nodes_in_group("dice").size() == 0:
 		end_round()
 	else:
-		is_player_turn = true # Возвращаем ход игроку
+		is_player_turn = true
 
 func apply_effect(is_player: bool, effect: String, value: int) -> void:
 	var target_name = "Игрок" if is_player else "ИИ"
@@ -243,6 +246,69 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 	update_ui()
 	check_win_condition()
 
+func shoot_soul_to_scales(start_pos: Vector3, is_player: bool, effect: String, value: int) -> void:
+	var duration: float = 0.65 # Скорость полета, как мы договорились
+	
+	# --- 1. ОБРАБОТКА ПУСТЫШЕК ---
+	if effect == "neutral":
+		spawn_floating_text(start_pos, effect, 0)
+		await get_tree().create_timer(duration).timeout
+		return
+		
+	# --- 2. ВЫБОР СНАРЯДА ---
+	var proj_scene: PackedScene = null
+	match effect:
+		"heal": proj_scene = soul_heal
+		"damage": proj_scene = soul_damage
+		"poison": proj_scene = soul_poison
+		"armor": proj_scene = soul_armor
+		
+	if not proj_scene: 
+		return
+	
+# --- 3. СОЗДАНИЕ СНАРЯДА ---
+	var soul = proj_scene.instantiate()
+	
+	var target_node = left_weight if is_player else right_weight
+	var end_pos = target_node.global_position
+	
+	# Ставим на кубик и поворачиваем
+	soul.position = start_pos
+	soul.look_at_from_position(start_pos, end_pos, Vector3.UP)
+	
+	# Добавляем в игру
+	add_child(soul)
+	
+	# --- МАГИЯ ОТ БАГОВ ШЛЕЙФА ---
+	# Приказываем коду подождать ровно один системный кадр (микросекунду).
+	# За это время Godot обновит физику, и скрипт шлейфа поймет, 
+	# что его реальная начальная точка — это стол, а не центр мира.
+	await get_tree().process_frame
+	
+	# --- 4. АНИМАЦИЯ ПОЛЕТА (Прямая линия) ---
+	var tween = create_tween()
+	
+	# Просто двигаем всю позицию целиком (global_position).
+	# Это заставит X, Y и Z меняться ПАРАЛЛЕЛЬНО, и снаряд полетит по прямой.
+	tween.tween_property(soul, "global_position", end_pos, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	
+# --- 5. ОЖИДАНИЕ УДАРА ---
+	await get_tree().create_timer(duration).timeout
+	
+	# --- 6. ПОПАДАНИЕ В ВЕСЫ ---
+	if is_instance_valid(soul):
+		soul.queue_free()
+	
+	# Эффекты взрыва и текст над чашей
+	spawn_floating_text(end_pos, effect, value)
+	spawn_particles(end_pos, effect)
+	
+	# Вздрагивание весов (оставляем -15.0, чтобы удар чувствовался лучше)
+	scale_jolt = -15.0 if is_player else 15.0 
+	
+	# Применение эффекта (урон/хил/яд/броня)
+	apply_effect(is_player, effect, value)
+	
 func process_poison() -> void:
 	if player_poison > 0:
 		print("\nЯд действует на Игрока: -", player_poison, " HP")
@@ -340,15 +406,21 @@ func update_ui() -> void:
 	ai_effects_label.text = ai_effects_text
 
 func _process(delta: float) -> void:
+	# Базовый наклон от разницы ХП
 	var hp_difference = player_hp - ai_hp
 	var raw_angle = hp_difference * 4.0
-	var clamped_angle = clamp(raw_angle, -13.0, 13.0)
-	var target_angle = deg_to_rad(clamped_angle)
+	var clamped_angle = clamp(raw_angle, -11.0, 11.0)
+	
+	# Плавно гасим "вздрагивание" от попадания души
+	scale_jolt = lerp(scale_jolt, 0.0, 10.0 * delta)
+	
+	# Итоговый угол = баланс ХП + временный пинок
+	var target_angle = deg_to_rad(clamped_angle + scale_jolt)
 	
 	scale_arm.rotation.x = lerp(scale_arm.rotation.x, target_angle, 6.0 * delta)
 	left_weight.rotation.x = -scale_arm.rotation.x
 	right_weight.rotation.x = -scale_arm.rotation.x
-
+	
 func spawn_floating_text(pos: Vector3, effect: String, value: int) -> void:
 	if floating_text_scene:
 		# Создаем копию сцены
