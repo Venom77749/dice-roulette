@@ -204,19 +204,6 @@ func find_property(property: StringName) -> Dictionary:
 	return {}
 "
 
-[sub_resource type="Gradient" id="Gradient_n4cs8"]
-colors = PackedColorArray(0.23906998, 0.26, 0.0806, 1, 0.4198267, 0.74, 0.3034, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_64ava"]
-gradient = SubResource("Gradient_n4cs8")
-
-[sub_resource type="Gradient" id="Gradient_5l1nh"]
-colors = PackedColorArray(0.66239995, 0.9, 0.504, 1, 0.08799999, 0.12, 0.023999998, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_befew"]
-gradient = SubResource("Gradient_5l1nh")
-metadata/uniform_name = "u_m6_rgb"
-
 [sub_resource type="Shader" id="Shader_5kh7j"]
 code = "shader_type spatial;
 render_mode unshaded, cull_disabled;
@@ -2932,6 +2919,13 @@ point_count = 3
 curve = SubResource("Curve_e3433")
 metadata/uniform_name = "u_m3_scale"
 
+[sub_resource type="Gradient" id="Gradient_5l1nh"]
+colors = PackedColorArray(0.66239995, 0.9, 0.504, 1, 0.08799999, 0.12, 0.023999998, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_befew"]
+gradient = SubResource("Gradient_5l1nh")
+metadata/uniform_name = "u_m6_rgb"
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uwnwv"]
 shader = SubResource("Shader_3nuob")
 shader_parameter/u_m3_scale = SubResource("CurveTexture_qa1km")
@@ -2964,6 +2958,12 @@ void fragment()
 	ALBEDO = texture(gradient, vec2(ALPHA)).rgb * emission;
 }"
 
+[sub_resource type="Gradient" id="Gradient_n4cs8"]
+colors = PackedColorArray(0.23906998, 0.26, 0.0806, 1, 0.4198267, 0.74, 0.3034, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_64ava"]
+gradient = SubResource("Gradient_n4cs8")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_shbj1"]
 render_priority = 0
 shader = SubResource("Shader_1rx6d")
@@ -2985,15 +2985,10 @@ point_count = 2
 radius = 0.1
 
 [node name="Node3D" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.017763808, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.011290923, 0, 0)
 script = SubResource("GDScript_ctic6")
 speed = 0.0
 lifetime = 1.0
-Lifetime = 1.0
-"Main Color" = Color(0.67296, 0.96, 0.5856, 1)
-"Projectile Color" = Color(0.508, 1, 0.27999997, 1)
-"Trail Color" = SubResource("GradientTexture1D_64ava")
-"Smoke Color" = SubResource("GradientTexture1D_befew")
 
 [node name="Emitters" type="Node3D" parent="."]
 

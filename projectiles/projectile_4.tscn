@@ -206,13 +206,6 @@ func find_property(property: StringName) -> Dictionary:
 	return {}
 "
 
-[sub_resource type="Gradient" id="Gradient_n4cs8"]
-offsets = PackedFloat32Array(0, 0.9, 1)
-colors = PackedColorArray(0.10373365, 0.033500183, 0.34433657, 1, 0.38528568, 0.41550237, 0.9654805, 1, 0.43039173, 0.34265214, 0.999582, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_64ava"]
-gradient = SubResource("Gradient_n4cs8")
-
 [sub_resource type="Shader" id="Shader_shl4u"]
 code = "shader_type spatial;
 render_mode unshaded, blend_add;
@@ -3876,6 +3869,13 @@ void fragment()
 	ALBEDO = texture(gradient, vec2(a)).rgb * emission * tex_sampled_1.rgb;
 }"
 
+[sub_resource type="Gradient" id="Gradient_n4cs8"]
+offsets = PackedFloat32Array(0, 0.9, 1)
+colors = PackedColorArray(0.10373365, 0.033500183, 0.34433657, 1, 0.38528568, 0.41550237, 0.9654805, 1, 0.43039173, 0.34265214, 0.999582, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_64ava"]
+gradient = SubResource("Gradient_n4cs8")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_shbj1"]
 render_priority = 0
 shader = SubResource("Shader_1rx6d")
@@ -3890,13 +3890,9 @@ shader_parameter/gradient = SubResource("GradientTexture1D_64ava")
 radius = 0.1
 
 [node name="Node3D" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06907117, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03402126, 0, 0)
 script = SubResource("GDScript_p3veb")
 speed = 0.0
-Lifetime = 1.0
-"Main Color" = Color(0.3764835, 0.25907636, 1, 1)
-"Projectile Color" = Color(0.45801848, 0.37849846, 1, 1)
-"Trail Color" = SubResource("GradientTexture1D_64ava")
 
 [node name="Emitters" type="Node3D" parent="."]
 

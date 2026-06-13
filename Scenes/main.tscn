@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=4 uid="uid://djy86rlauvp15"]
+[gd_scene load_steps=85 format=4 uid="uid://djy86rlauvp15"]
 
 [ext_resource type="Script" uid="uid://ddxe01wwtpo4m" path="res://Scripts/main.gd" id="1_hptm8"]
 [ext_resource type="PackedScene" uid="uid://5xj2w51u4j8w" path="res://Scenes/physics_dice.tscn" id="2_d1ilt"]
@@ -19,6 +19,14 @@
 [ext_resource type="Texture2D" uid="uid://bdkvxp7gjcu2f" path="res://Models/Floating Spirit Fire_Floating Spirit Texture Fire.png" id="13_wsu2k"]
 [ext_resource type="PackedScene" uid="uid://cb8q5p4oa17l" path="res://Models/stylized_flame/flame.tscn" id="14_jkdf5"]
 [ext_resource type="Texture2D" uid="uid://doud71ruqwr2n" path="res://Models/Skeleton/GameBoyColor/base.png" id="15_wsu2k"]
+[ext_resource type="PackedScene" uid="uid://cuwku0n7dum8p" path="res://Models/Fantasy Props/Exports/glTF/Stall_Cart_Empty.gltf" id="20_ee4r6"]
+[ext_resource type="PackedScene" uid="uid://cjwcky1wp2oc2" path="res://Models/Fantasy Props/Exports/glTF/Pouch_Large.gltf" id="21_gt3je"]
+[ext_resource type="PackedScene" uid="uid://dgve6gk85dvg6" path="res://Models/Fantasy Props/Exports/glTF/Crate_Wooden.gltf" id="22_3pmx8"]
+[ext_resource type="PackedScene" uid="uid://bqbig4iuo8vop" path="res://Models/Fantasy Props/Exports/glTF/Barrel.gltf" id="22_u50mg"]
+[ext_resource type="Script" uid="uid://b8sghnooeryxm" path="res://Scenes/candle_flicker.gd" id="23_1w6v2"]
+[ext_resource type="PackedScene" uid="uid://dxhvj78n5w73c" path="res://Models/Fantasy Props/Exports/glTF/Candle_2.gltf" id="23_gt3je"]
+[ext_resource type="PackedScene" uid="uid://bjt5a6pbqfipn" path="res://Models/Fantasy Props/Exports/glTF/Cage_Small.gltf" id="25_u50mg"]
+[ext_resource type="PackedScene" uid="uid://dk4dke4f2q73h" path="res://Models/Fantasy Props/Exports/glTF/CandleStick_Triple.gltf" id="26_cbgmd"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1bvp3"]
 size = Vector3(5.894287, 0.5, 5.9328003)
@@ -880,6 +888,23 @@ _data = {
 &"take": SubResource("Animation_wsu2k")
 }
 
+[sub_resource type="Environment" id="Environment_1w6v2"]
+background_mode = 1
+background_color = Color(0.03137255, 0.043137256, 0.078431375, 1)
+tonemap_mode = 2
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1w6v2"]
+emission_shape = 3
+emission_box_extents = Vector3(15, 1, 15)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ueoa1"]
+transparency = 1
+albedo_color = Color(0.42745098, 0.47843137, 0.58431375, 0.27450982)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6vcvc"]
+material = SubResource("StandardMaterial3D_ueoa1")
+size = Vector3(0.02, 0.5, 0.02)
+
 [node name="GameManager" type="Node3D"]
 script = ExtResource("1_hptm8")
 dice_scene = ExtResource("2_d1ilt")
@@ -895,7 +920,9 @@ soul_armor = ExtResource("9_pdsj5")
 transform = Transform3D(1, 0, 0, 0, 0.9373429, 0.34840834, 0, -0.34840834, 0.9373429, 0.57875896, 2.0741458, 2.0821667)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.00055853924, 0.9999999, 0, -0.9999999, -0.00055853924, 0.03772807, 1.3983921, -0.26683378)
+transform = Transform3D(1, 0, 0, 0, -0.00055853924, 0.9999999, 0, -0.9999999, -0.00055853924, -2.7326138, 36.074123, -0.26683378)
+light_color = Color(0, 0.31278294, 0.61099416, 1)
+light_energy = 0.6
 
 [node name="Table" type="StaticBody3D" parent="."]
 
@@ -1099,14 +1126,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.169468, -0.4025203, -6.48
 script = ExtResource("12_fdnlq")
 
 [node name="Floating Spirit Fire" type="MeshInstance3D" parent="Floating Spirit Fire"]
-transform = Transform3D(-1.8304961, 0, -1.7027289, 0, 2.4999998, 0, 1.7027289, 0, -1.8304961, 3.4175224, -0.49525827, -0.8221245)
+transform = Transform3D(-1.8304961, 0, -1.7027289, 0, 2.4999998, 0, 1.7027289, 0, -1.8304961, -2.7049847, -0.49525827, -0.32835102)
 material_override = SubResource("StandardMaterial3D_fdnlq")
 mesh = SubResource("ArrayMesh_4x1bc")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_jkdf5")
-
-[node name="fire" parent="." instance=ExtResource("14_jkdf5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2933555, 0.09359324, -4.0525274)
 
 [node name="skeleton" type="Node3D" parent="."]
 transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0.7629416, 2.3841858e-07, -6.458288)
@@ -1268,7 +1292,7 @@ mesh = SubResource("ArrayMesh_fv0ne")
 skin = SubResource("Skin_2g0k6")
 
 [node name="Camera" type="Camera3D" parent="skeleton"]
-transform = Transform3D(0.87292206, -0.0068116235, 0.4878121, -3.0803494e-07, 0.9999025, 0.013962812, -0.48785967, -0.012188598, 0.872837, 6.602011, 0.19976895, 11.575218)
+transform = Transform3D(0.6235158, -0.004865447, 0.34843725, -2.2002496e-07, 0.7142161, 0.009973438, -0.34847122, -0.008706142, 0.623455, 6.652506, 0.19976896, 11.575218)
 fov = 39.59775
 near = 0.1
 far = 1000.0
@@ -1278,6 +1302,83 @@ libraries = {
 &"": SubResource("AnimationLibrary_k12tt")
 }
 autoplay = "idle"
-speed_scale = 2.5
+speed_scale = 1.5
+
+[node name="Decoration" type="Node3D" parent="."]
+
+[node name="Crate_Wooden2" parent="Decoration" instance=ExtResource("22_3pmx8")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 7.6231976, -3.1488345, -17.166477)
+
+[node name="Crate_Wooden5" parent="Decoration" instance=ExtResource("22_3pmx8")]
+transform = Transform3D(2.6474156, 0, -1.4110954, 0, 3, 0, 1.4110954, 0, 2.6474156, 7.6231976, -0.4380269, -17.049187)
+
+[node name="Crate_Wooden3" parent="Decoration" instance=ExtResource("22_3pmx8")]
+transform = Transform3D(2.7188349, 0, -1.2680445, 0, 3, 0, 1.2680445, 0, 2.7188349, 7.6231976, -3.1488345, -14.16926)
+
+[node name="Crate_Wooden4" parent="Decoration" instance=ExtResource("22_3pmx8")]
+transform = Transform3D(2.0288541, 0, 2.209921, 0, 3, 0, -2.209921, 0, 2.0288541, 4.5670834, -3.1488345, -16.889511)
+
+[node name="Candle_big" parent="Decoration" instance=ExtResource("23_gt3je")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 4.6029897, -0.6937984, -15.4332485)
+
+[node name="fire3" parent="Decoration/Candle_big" instance=ExtResource("14_jkdf5")]
+transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.4901161e-08, 0, 0.21000002, 0.00064754486, 0.21891609, 0.0019388199)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
+light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
+light_energy = 1.1989603
+shadow_enabled = true
+omni_range = 1.8555
+script = ExtResource("23_1w6v2")
+base_energy = 1.5
+flicker_speed = 3.0
+flicker_intensity = 0.8
+
+[node name="Barrel2" parent="Decoration" instance=ExtResource("22_u50mg")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 1.4243875, -3.3090487, -17.57869)
+
+[node name="Candle_small" parent="Decoration" instance=ExtResource("23_gt3je")]
+transform = Transform3D(1.4567763, 0, -0.3574951, 0, 1.5, 0, 0.3574951, 0, 1.4567763, 4.3506675, -0.6830853, -15.544154)
+
+[node name="fire2" parent="Decoration/Candle_small" instance=ExtResource("14_jkdf5")]
+transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.039721683, 0, 0.16186406, -0.0015182495, 0.2304097, -0.0011110306)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
+light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
+light_energy = 1.0681672
+shadow_enabled = true
+omni_range = 1.8555
+script = ExtResource("23_1w6v2")
+base_energy = 1.5
+flicker_speed = 7.0
+flicker_intensity = 0.8
+
+[node name="Cage_Small2" parent="Decoration" instance=ExtResource("25_u50mg")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 4.4573255, -0.43034738, -17.286371)
+
+[node name="shop" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.378263, -3.3176708, 0)
+
+[node name="Pouch_Large2" parent="shop" instance=ExtResource("21_gt3je")]
+transform = Transform3D(-4.371139e-07, 0, 10, 0, 10, 0, -10, 0, -4.371139e-07, -1.6300964, 0, -3.9480498)
+
+[node name="Stall_Cart_Empty2" parent="shop" instance=ExtResource("20_ee4r6")]
+transform = Transform3D(-1.3113416e-07, 0, 3, 0, 3, 0, -3, 0, -1.3113416e-07, 0, 0, 0)
+
+[node name="CandleStick_Triple2" parent="." instance=ExtResource("26_cbgmd")]
+transform = Transform3D(2.3483784, 0, -1.8668468, 0, 2.9999998, 0, 1.8668468, 0, 2.3483784, 1.1574125, 0.15299541, -17.504665)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1w6v2")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1.0958918, 0, 0, 0, 12.489226, 0, 0, 0, 0.8161864, -9.883933, 10.488684, -1.1172075)
+amount = 500
+process_material = SubResource("ParticleProcessMaterial_1w6v2")
+draw_pass_1 = SubResource("BoxMesh_6vcvc")
 
 [editable path="alley"]
+[editable path="Decoration/Candle_big/fire3"]
+[editable path="Decoration/Candle_small/fire2"]
