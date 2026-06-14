@@ -928,9 +928,11 @@ soul_armor = ExtResource("9_pdsj5")
 transform = Transform3D(1, 0, 0, 0, 0.9373429, 0.34840834, 0, -0.34840834, 0.9373429, 0.57875896, 2.0741458, 2.0821667)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.00055853924, 0.9999999, 0, -0.9999999, -0.00055853924, -2.7326138, 36.074123, -0.26683378)
+transform = Transform3D(0.99813473, 0.05687839, -0.022175955, 0, 0.36325118, 0.9316912, 0.061048537, -0.92995346, 0.36257365, -2.7326138, 36.074123, -0.26683378)
 light_color = Color(0, 0.31278294, 0.61099416, 1)
 light_energy = 0.6
+light_angular_distance = 6.0
+shadow_enabled = true
 
 [node name="Table" type="StaticBody3D" parent="."]
 
@@ -1127,52 +1129,69 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3299513, 1.5720257, -1.7730
 transform = Transform3D(1, 0, 0, 0, 0.45465922, 0.8906655, 0, -0.8906655, 0.45465922, 0.57875896, 1.7232959, -0.33049357)
 
 [node name="alley" parent="." instance=ExtResource("10_fevyy")]
-transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -25.78383, -17.364742, 15.836538)
+transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -28.052002, -16.98903, 15.034378)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="alley"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2934017, 9.629131, -0.28497553)
+transform = Transform3D(0.2857143, 0, 0, 0, 0.2857143, 0, 0, 0, 0.2857143, -6.2934017, 9.322546, -0.059976578)
+light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
+light_energy = 5.0
+light_indirect_energy = 4.717
+light_specular = 0.0
+shadow_enabled = true
+distance_fade_begin = 5.0
+distance_fade_shadow = 20.0
+omni_range = 150.0
+omni_attenuation = 1.2
+
+[node name="OmniLight3D7" type="OmniLight3D" parent="alley"]
+transform = Transform3D(0.2857143, 0, 0, 0, 0.2857143, 0, 0, 0, 0.2857143, 8.870362, 4.613795, -12.574878)
 light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
 light_energy = 5.0
 light_specular = 0.0
-omni_range = 15.356325
+shadow_enabled = true
+omni_range = 150.0
+omni_attenuation = 1.2
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="alley"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.139888, 7.8841443, -11.677551)
 light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
 light_energy = 5.0
 light_specular = 0.0
-omni_range = 18.01093
+shadow_enabled = true
+omni_range = 150.0
+omni_attenuation = 1.2
 
 [node name="OmniLight3D5" type="OmniLight3D" parent="alley"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.970913, 9.135008, -7.020442)
 light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
 light_energy = 5.0
 light_specular = 0.0
-omni_range = 16.139753
+shadow_enabled = true
+omni_range = 150.0
+omni_attenuation = 1.2
 
 [node name="OmniLight3D6" type="OmniLight3D" parent="alley"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.96534, 9.135008, -2.8782928)
 light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
 light_energy = 5.0
+light_indirect_energy = 3.748
+light_volumetric_fog_energy = 0.0
 light_specular = 0.0
-omni_range = 17.456556
+shadow_enabled = true
+omni_range = 150.0
+omni_attenuation = 1.2
 
 [node name="OmniLight3D4" type="OmniLight3D" parent="alley"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.261303, 8.765671, -13.364281)
-light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
-light_energy = 3.0
-light_specular = 0.0
-omni_range = 14.851013
-
-[node name="OmniLight3D3" type="OmniLight3D" parent="alley"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4276094, 8.933447, 2.8317585)
+transform = Transform3D(0.2857143, 0, 0, 0, 0.2857143, 0, 0, 0, 0.2857143, 4.2937794, 9.138084, -13.3642845)
 light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
 light_energy = 5.0
 light_specular = 0.0
-omni_range = 15.78904
-
-[node name="Bench2" parent="alley" instance=ExtResource("15_kltya")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.74086, 4.015672, -0.3679986)
+shadow_enabled = true
+distance_fade_begin = 5.0
+distance_fade_shadow = 70.0
+distance_fade_length = 25.0
+omni_range = 150.0
+omni_attenuation = 1.2
 
 [node name="Floating Spirit Fire" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.169468, -0.4025203, -6.485569)
@@ -1361,19 +1380,19 @@ speed_scale = 1.5
 [node name="Decoration" type="Node3D" parent="."]
 
 [node name="Crate_Wooden2" parent="Decoration" instance=ExtResource("22_3pmx8")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 7.6231976, -3.1488345, -17.166477)
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 6.0019784, -3.1488345, -17.166477)
 
 [node name="Crate_Wooden5" parent="Decoration" instance=ExtResource("22_3pmx8")]
-transform = Transform3D(2.6474156, 0, -1.4110954, 0, 3, 0, 1.4110954, 0, 2.6474156, 7.6231976, -0.4380269, -17.049187)
+transform = Transform3D(2.6474156, 0, -1.4110954, 0, 3, 0, 1.4110954, 0, 2.6474156, 6.0019784, -0.4380269, -17.049187)
 
 [node name="Crate_Wooden3" parent="Decoration" instance=ExtResource("22_3pmx8")]
-transform = Transform3D(2.7188349, 0, -1.2680445, 0, 3, 0, 1.2680445, 0, 2.7188349, 7.6231976, -3.1488345, -14.16926)
+transform = Transform3D(2.7188349, 0, -1.2680445, 0, 3, 0, 1.2680445, 0, 2.7188349, 6.0019784, -3.1488345, -14.16926)
 
 [node name="Crate_Wooden4" parent="Decoration" instance=ExtResource("22_3pmx8")]
-transform = Transform3D(2.0288541, 0, 2.209921, 0, 3, 0, -2.209921, 0, 2.0288541, 4.5670834, -3.1488345, -16.889511)
+transform = Transform3D(2.0288541, 0, 2.209921, 0, 3, 0, -2.209921, 0, 2.0288541, 2.9458642, -3.1488345, -16.889511)
 
 [node name="Candle_big" parent="Decoration" instance=ExtResource("23_gt3je")]
-transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 4.6029897, -0.6937984, -15.4332485)
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 2.9817705, -0.6937984, -15.4332485)
 
 [node name="fire3" parent="Decoration/Candle_big" instance=ExtResource("14_jkdf5")]
 transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.4901161e-08, 0, 0.21000002, 0.00064754486, 0.21891609, 0.0019388199)
@@ -1381,19 +1400,20 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 3.8321755
+light_energy = 4.7665215
 shadow_enabled = true
-omni_range = 3.9331205
+omni_range = 15.0
+omni_attenuation = 1.7
 script = ExtResource("23_1w6v2")
 base_energy = 3.0
 flicker_speed = 3.0
 flicker_intensity = 5.0
 
 [node name="Barrel2" parent="Decoration" instance=ExtResource("22_u50mg")]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 1.4243875, -3.3090487, -17.57869)
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -0.1968317, -2.8901129, -17.57869)
 
 [node name="Candle_small" parent="Decoration" instance=ExtResource("23_gt3je")]
-transform = Transform3D(1.4567763, 0, -0.3574951, 0, 1.5, 0, 0.3574951, 0, 1.4567763, 4.3506675, -0.6830853, -15.544154)
+transform = Transform3D(1.4567763, 0, -0.3574951, 0, 1.5, 0, 0.3574951, 0, 1.4567763, 2.7348542, -0.6830853, -15.544154)
 
 [node name="fire2" parent="Decoration/Candle_small" instance=ExtResource("14_jkdf5")]
 transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.039721683, 0, 0.16186406, -0.0015182495, 0.2304097, -0.0011110306)
@@ -1401,22 +1421,35 @@ transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.0397216
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 2.5644329
+light_energy = -0.73658746
 shadow_enabled = true
-omni_range = 4.1437726
+omni_range = 15.0
+omni_attenuation = 1.7
 script = ExtResource("23_1w6v2")
 base_energy = 3.0
 flicker_speed = 3.0
 flicker_intensity = 5.0
 
 [node name="Cage_Small2" parent="Decoration" instance=ExtResource("25_u50mg")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 4.4573255, -0.43034738, -17.286371)
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 2.8361063, -0.43034738, -17.286371)
 
 [node name="CandleStick_Triple2" parent="Decoration" instance=ExtResource("26_cbgmd")]
-transform = Transform3D(2.3483784, 0, -1.8668468, 0, 2.9999998, 0, 1.8668468, 0, 2.3483784, 1.1574125, 0.15299541, -17.504665)
+transform = Transform3D(2.3483784, 0, -1.8668468, 0, 2.9999998, 0, 1.8668468, 0, 2.3483784, -0.46380663, 0.57193124, -17.504665)
+
+[node name="Bench2" parent="Decoration" instance=ExtResource("15_kltya")]
+transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -11.458992, -2.9341784, 13.746383)
+
+[node name="Barrel3" parent="Decoration" instance=ExtResource("22_u50mg")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -31.056896, -2.89, -23.163176)
+
+[node name="Barrel4" parent="Decoration" instance=ExtResource("22_u50mg")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -31.086863, -2.89, -26.090275)
+
+[node name="Bag2" parent="Decoration" instance=ExtResource("29_e08e2")]
+transform = Transform3D(0.07853099, -1.9871789, -2.246097, 0, 2.246867, -1.9878601, 2.9989722, 0.052036203, 0.058816224, -30.951, 0.626, -23.054)
 
 [node name="shop" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.378263, -3.3176708, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.378263, -2.9657266, 0)
 
 [node name="Pouch_Large2" parent="shop" instance=ExtResource("21_gt3je")]
 transform = Transform3D(-4.371139e-07, 0, 10, 0, 10, 0, -10, 0, -4.371139e-07, -1.6300964, 0, -3.9480498)
@@ -1451,7 +1484,8 @@ light_color = Color(0.8156863, 0.4509804, 0, 1)
 light_energy = 2.0
 shadow_enabled = true
 shadow_blur = 3.0
-omni_range = 6.1198754
+omni_range = 15.0
+omni_attenuation = 1.7
 
 [node name="Bottle_12" parent="shop" instance=ExtResource("32_r33sp")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -0.6505394, 3.3067727, -1.2106663)
@@ -1469,7 +1503,9 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 transform = Transform3D(0.4, 0, 3.576279e-08, 0, 0.4, 0, -3.576279e-08, 0, 0.4, -0.003107071, 0.40769294, -0.0023822784)
 light_color = Color(0.8156863, 0.4509804, 0, 1)
 light_energy = 2.0
-omni_range = 9.519607
+shadow_enabled = true
+omni_range = 15.0
+omni_attenuation = 1.7
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1w6v2")
@@ -1480,7 +1516,27 @@ amount = 500
 process_material = SubResource("ParticleProcessMaterial_1w6v2")
 draw_pass_1 = SubResource("BoxMesh_6vcvc")
 
-[editable path="alley"]
+[node name="OmniLight3D3" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.979065, 12.478521, 21.670195)
+light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
+light_energy = 5.0
+light_specular = 0.0
+shadow_enabled = true
+shadow_reverse_cull_face = true
+distance_fade_begin = 5.0
+distance_fade_shadow = 10.0
+distance_fade_length = 20.0
+omni_range = 150.0
+
+[node name="OmniLight3D5" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.986794, 3, -36.538494)
+light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
+light_energy = 5.0
+light_specular = 0.0
+shadow_enabled = true
+omni_range = 150.0
+omni_attenuation = 1.2
+
 [editable path="Decoration/Candle_big/fire3"]
 [editable path="Decoration/Candle_small/fire2"]
 [editable path="shop/CandleStick_Triple3/fire2"]
