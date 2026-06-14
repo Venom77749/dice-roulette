@@ -22,9 +22,10 @@ theme/custom_font="uid://b1a3sjwqi25vk"
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
-lights_and_shadows/positional_shadow/soft_shadow_filter_quality=3
-anti_aliasing/quality/msaa_2d=1
-anti_aliasing/quality/msaa_3d=1
+lights_and_shadows/directional_shadow/size=2048
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=0
+reflections/sky_reflections/roughness_layers=4
+reflections/sky_reflections/ggx_samples=16
+reflections/reflection_atlas/reflection_size=128
+reflections/reflection_atlas/reflection_count=32
 anti_aliasing/quality/screen_space_aa=1
-lights_and_shadows/positional_shadow/atlas_quadrant_0_subdiv=3
-lights_and_shadows/positional_shadow/atlas_quadrant_1_subdiv=3

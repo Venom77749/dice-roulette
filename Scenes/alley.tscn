@@ -372,177 +372,6 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.3,
 [node name="Wall_Plaster_Straight21" parent="." instance=ExtResource("7_ikers")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.3, 7, 5)
 
-[node name="Floor_WoodDark2" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 10, -11.3)
-
-[node name="Floor_WoodDark3" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 10, -11.3)
-
-[node name="Floor_WoodDark4" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 10, -11.3)
-
-[node name="Floor_WoodDark5" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 10, -11.3)
-
-[node name="Floor_WoodDark6" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 10, -11.3)
-
-[node name="Floor_WoodDark7" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 10, -11.3)
-
-[node name="Floor_WoodDark8" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 10, -11.3)
-
-[node name="Floor_WoodDark9" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 10, -13.3)
-
-[node name="Floor_WoodDark10" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 10, -15.3)
-
-[node name="Floor_WoodDark11" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 10, -13.3)
-
-[node name="Floor_WoodDark12" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 10, -13.3)
-
-[node name="Floor_WoodDark13" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 10, -13.3)
-
-[node name="Floor_WoodDark14" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 10, -13.3)
-
-[node name="Floor_WoodDark15" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 10, -13.3)
-
-[node name="Floor_WoodDark16" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 10, -13.3)
-
-[node name="Floor_WoodDark17" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 10, -15.3)
-
-[node name="Floor_WoodDark18" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 10, -15.3)
-
-[node name="Floor_WoodDark19" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 10, -15.3)
-
-[node name="Floor_WoodDark20" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 10, -15.3)
-
-[node name="Floor_WoodDark21" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 10, -15.3)
-
-[node name="Floor_WoodDark22" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 10, -15.3)
-
-[node name="Floor_WoodDark23" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 10, -9.3)
-
-[node name="Floor_WoodDark24" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 10, -7.3)
-
-[node name="Floor_WoodDark25" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 10, -5.3)
-
-[node name="Floor_WoodDark26" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 10, -3.3)
-
-[node name="Floor_WoodDark27" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 10, -1.3)
-
-[node name="Floor_WoodDark28" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 10, 0.7)
-
-[node name="Floor_WoodDark29" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 10, 2.7)
-
-[node name="Floor_WoodDark30" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 10, 4.7)
-
-[node name="Floor_WoodDark31" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 10, -9.3)
-
-[node name="Floor_WoodDark32" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 10, -7.3)
-
-[node name="Floor_WoodDark33" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 10, -5.3)
-
-[node name="Floor_WoodDark34" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 10, -3.3)
-
-[node name="Floor_WoodDark35" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 10, -1.3)
-
-[node name="Floor_WoodDark36" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 10, 0.7)
-
-[node name="Floor_WoodDark37" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 10, 2.7)
-
-[node name="Floor_WoodDark38" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 10, 4.7)
-
-[node name="Floor_WoodDark39" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 10, -9.3)
-
-[node name="Floor_WoodDark40" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 10, -7.3)
-
-[node name="Floor_WoodDark41" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 10, -5.3)
-
-[node name="Floor_WoodDark42" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 10, -3.3)
-
-[node name="Floor_WoodDark43" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 10, -1.3)
-
-[node name="Floor_WoodDark44" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 10, 0.7)
-
-[node name="Floor_WoodDark45" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 10, 2.7)
-
-[node name="Floor_WoodDark46" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 10, 4.7)
-
-[node name="Floor_WoodDark47" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 10, 1.3)
-
-[node name="Floor_WoodDark48" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 10, 1.3)
-
-[node name="Floor_WoodDark49" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 10, 1.3)
-
-[node name="Floor_WoodDark50" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 10, 1.3)
-
-[node name="Floor_WoodDark51" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 10, 3.3)
-
-[node name="Floor_WoodDark52" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 10, 5.3)
-
-[node name="Floor_WoodDark53" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 10, 3.3)
-
-[node name="Floor_WoodDark54" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 10, 3.3)
-
-[node name="Floor_WoodDark55" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 10, 3.3)
-
-[node name="Floor_WoodDark56" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 10, 5.3)
-
-[node name="Floor_WoodDark57" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 10, 5.3)
-
-[node name="Floor_WoodDark58" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 10, 5.3)
-
 [node name="Floor_WoodDark59" parent="." instance=ExtResource("9_yo76l")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 7, -11.3)
 
@@ -809,105 +638,6 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.3,
 
 [node name="Wall_Plaster_Straight53" parent="." instance=ExtResource("7_ikers")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3.3, 7, -16)
-
-[node name="Floor_WoodDark116" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 10, -11.3)
-
-[node name="Floor_WoodDark117" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 10, -11.3)
-
-[node name="Floor_WoodDark118" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 10, -11.3)
-
-[node name="Floor_WoodDark119" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 10, -13.3)
-
-[node name="Floor_WoodDark120" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 10, -13.3)
-
-[node name="Floor_WoodDark121" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 10, -13.3)
-
-[node name="Floor_WoodDark122" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 10, -15.3)
-
-[node name="Floor_WoodDark123" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 10, -15.3)
-
-[node name="Floor_WoodDark124" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 10, -15.3)
-
-[node name="Floor_WoodDark125" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 10, -9.3)
-
-[node name="Floor_WoodDark126" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 10, -7.3)
-
-[node name="Floor_WoodDark127" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 10, -5.3)
-
-[node name="Floor_WoodDark128" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 10, -3.3)
-
-[node name="Floor_WoodDark129" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 10, -1.3)
-
-[node name="Floor_WoodDark130" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 10, 0.7)
-
-[node name="Floor_WoodDark131" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 10, 2.7)
-
-[node name="Floor_WoodDark132" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 10, 4.7)
-
-[node name="Floor_WoodDark133" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 10, -9.3)
-
-[node name="Floor_WoodDark134" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 10, -7.3)
-
-[node name="Floor_WoodDark135" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 10, -5.3)
-
-[node name="Floor_WoodDark136" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 10, -3.3)
-
-[node name="Floor_WoodDark137" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 10, -1.3)
-
-[node name="Floor_WoodDark138" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 10, 0.7)
-
-[node name="Floor_WoodDark139" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 10, 2.7)
-
-[node name="Floor_WoodDark140" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 10, 4.7)
-
-[node name="Floor_WoodDark141" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 10, -9.3)
-
-[node name="Floor_WoodDark142" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 10, -7.3)
-
-[node name="Floor_WoodDark143" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 10, -5.3)
-
-[node name="Floor_WoodDark144" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 10, -3.3)
-
-[node name="Floor_WoodDark145" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 10, -1.3)
-
-[node name="Floor_WoodDark146" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 10, 0.7)
-
-[node name="Floor_WoodDark147" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 10, 2.7)
-
-[node name="Floor_WoodDark148" parent="." instance=ExtResource("9_yo76l")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 10, 4.7)
 
 [node name="Floor_WoodDark149" parent="." instance=ExtResource("9_yo76l")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 7, -11.3)
@@ -1223,3 +953,15 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.3
 
 [node name="Wall_Plaster_Straight85" parent="." instance=ExtResource("7_ikers")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.3899693, 7, -5.047949)
+
+[node name="Wall_Plaster_Straight_Base32" parent="." instance=ExtResource("1_w7wu7")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 9.3, 4, 5.33717)
+
+[node name="Wall_Plaster_Straight_Base33" parent="." instance=ExtResource("1_w7wu7")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 7.3, 4, 5.33717)
+
+[node name="Wall_Plaster_Straight_Base34" parent="." instance=ExtResource("1_w7wu7")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5.3, 4, 5.33717)
+
+[node name="Wall_Plaster_Straight_Base35" parent="." instance=ExtResource("1_w7wu7")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 3.3, 4, 5.33717)

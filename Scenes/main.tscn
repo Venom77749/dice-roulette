@@ -1406,7 +1406,7 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 5.110963
+light_energy = 4.7437644
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1428,7 +1428,7 @@ transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.0397216
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 3.2222016
+light_energy = 2.128031
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1540,16 +1540,6 @@ omni_range = 150.0
 
 [node name="OmniLight3D5" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.986794, 3, -36.538494)
-light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
-light_energy = 5.0
-light_specular = 4.0
-shadow_enabled = true
-shadow_blur = 10.0
-omni_range = 150.0
-omni_attenuation = 1.2
-
-[node name="OmniLight3D6" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.986794, 3, 46.3129)
 light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
 light_energy = 5.0
 light_specular = 4.0
