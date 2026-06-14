@@ -204,27 +204,6 @@ func find_property(property: StringName) -> Dictionary:
 	return {}
 "
 
-[sub_resource type="Gradient" id="Gradient_ie0m2"]
-interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.37037036, 0.7)
-colors = PackedColorArray(0.143, 0.43875006, 0.65, 1, 0.4380133, 0.2888, 0.76, 1, 0.3162, 0.5617199, 0.93, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_i5f35"]
-gradient = SubResource("Gradient_ie0m2")
-metadata/uniform_name = "u_m2_rgb"
-
-[sub_resource type="Gradient" id="Gradient_64ava"]
-colors = PackedColorArray(0.13200003, 0.13200003, 0.6, 1, 0.342, 0.6257334, 0.95, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_1rx6d"]
-gradient = SubResource("Gradient_64ava")
-
-[sub_resource type="Gradient" id="Gradient_n4cs8"]
-colors = PackedColorArray(0.0806, 0.08658, 0.26, 1, 0.3034, 0.49259338, 0.74, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_64ava"]
-gradient = SubResource("Gradient_n4cs8")
-
 [sub_resource type="Shader" id="Shader_n4cs8"]
 code = "shader_type spatial;
 render_mode unshaded, cull_disabled;
@@ -284,6 +263,12 @@ void fragment()
 	vec4 tex_sampled_1 = texture(tex_1, UV);
 	ALBEDO = texture(gradient, vec2(tex_sampled_1.r)).rgb * emission;	
 }"
+
+[sub_resource type="Gradient" id="Gradient_64ava"]
+colors = PackedColorArray(0.13200003, 0.13200003, 0.6, 1, 0.342, 0.6257334, 0.95, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_1rx6d"]
+gradient = SubResource("Gradient_64ava")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lewr7"]
 render_priority = 1
@@ -1289,6 +1274,15 @@ void process() {
 }
 
 "
+
+[sub_resource type="Gradient" id="Gradient_ie0m2"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.37037036, 0.7)
+colors = PackedColorArray(0.143, 0.43875006, 0.65, 1, 0.4380133, 0.2888, 0.76, 1, 0.3162, 0.5617199, 0.93, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_i5f35"]
+gradient = SubResource("Gradient_ie0m2")
+metadata/uniform_name = "u_m2_rgb"
 
 [sub_resource type="Curve" id="Curve_pi7u6"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.7240366, 0.0, 0, 0]
@@ -3457,6 +3451,12 @@ void fragment()
 
 "
 
+[sub_resource type="Gradient" id="Gradient_n4cs8"]
+colors = PackedColorArray(0.0806, 0.08658, 0.26, 1, 0.3034, 0.49259338, 0.74, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_64ava"]
+gradient = SubResource("Gradient_n4cs8")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_shbj1"]
 render_priority = 0
 shader = SubResource("Shader_1rx6d")
@@ -3466,7 +3466,7 @@ shader_parameter/tex_1 = ExtResource("8_tcnuu")
 shader_parameter/gradient = SubResource("GradientTexture1D_64ava")
 shader_parameter/speed = Vector2(0, -1)
 
-[sub_resource type="ImmediateMesh" id="ImmediateMesh_i0g27"]
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_4arys"]
 
 [sub_resource type="Curve" id="Curve_qyeq5"]
 _data = [Vector2(0, 1), 0.0, -0.5480256, 0, 1, Vector2(1, 0.4519744), -0.5480256, 0.0, 1, 0]
@@ -3479,11 +3479,6 @@ radius = 0.13
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.060268402, 0, 0)
 script = SubResource("GDScript_qr8yg")
 lifetime = 1.0
-Lifetime = 1.0
-"Main Color" = Color(0.4004, 0.5872534, 0.91, 1)
-"Shape Color" = SubResource("GradientTexture1D_i5f35")
-"Projectile Color" = SubResource("GradientTexture1D_1rx6d")
-"Trail Color" = SubResource("GradientTexture1D_64ava")
 
 [node name="Emitters" type="Node3D" parent="."]
 
@@ -3596,7 +3591,7 @@ draw_pass_1 = SubResource("QuadMesh_ganjc")
 [node name="TrailPrefab" type="MeshInstance3D" parent="."]
 material_override = SubResource("ShaderMaterial_shbj1")
 cast_shadow = 0
-mesh = SubResource("ImmediateMesh_i0g27")
+mesh = SubResource("ImmediateMesh_4arys")
 script = ExtResource("9_tuemg")
 width = 0.15
 width_over_lifetime = SubResource("Curve_qyeq5")

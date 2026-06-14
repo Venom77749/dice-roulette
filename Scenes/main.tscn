@@ -1,4 +1,4 @@
-[gd_scene load_steps=91 format=4 uid="uid://djy86rlauvp15"]
+[gd_scene load_steps=92 format=4 uid="uid://djy86rlauvp15"]
 
 [ext_resource type="Script" uid="uid://ddxe01wwtpo4m" path="res://Scripts/main.gd" id="1_hptm8"]
 [ext_resource type="PackedScene" uid="uid://5xj2w51u4j8w" path="res://Scenes/physics_dice.tscn" id="2_d1ilt"]
@@ -32,6 +32,7 @@
 [ext_resource type="PackedScene" uid="uid://nbtlvejq24mb" path="res://Models/Fantasy Props/Exports/glTF/Bag.gltf" id="29_e08e2"]
 [ext_resource type="PackedScene" uid="uid://b5tk4gru5j2sx" path="res://Models/Fantasy Props/Exports/glTF/BookGroup_Small_3.gltf" id="31_neg2b"]
 [ext_resource type="PackedScene" uid="uid://coqhculykim" path="res://Models/Fantasy Props/Exports/glTF/Bottle_1.gltf" id="32_r33sp"]
+[ext_resource type="AudioStream" uid="uid://inqoretwnfnd" path="res://mixkit-light-rain-loop-2393.wav" id="35_r33sp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1bvp3"]
 size = Vector3(5.894287, 0.5, 5.9328003)
@@ -1406,7 +1407,7 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 4.7437644
+light_energy = 3.836663
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1428,7 +1429,7 @@ transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.0397216
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 2.128031
+light_energy = 3.566983
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1547,6 +1548,11 @@ shadow_enabled = true
 shadow_blur = 10.0
 omni_range = 150.0
 omni_attenuation = 1.2
+
+[node name="RainAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("35_r33sp")
+volume_db = -20.0
+autoplay = true
 
 [editable path="Decoration/Candle_big/fire3"]
 [editable path="Decoration/Candle_small/fire2"]
