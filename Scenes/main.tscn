@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=4 uid="uid://djy86rlauvp15"]
+[gd_scene load_steps=87 format=4 uid="uid://djy86rlauvp15"]
 
 [ext_resource type="Script" uid="uid://ddxe01wwtpo4m" path="res://Scripts/main.gd" id="1_hptm8"]
 [ext_resource type="PackedScene" uid="uid://5xj2w51u4j8w" path="res://Scenes/physics_dice.tscn" id="2_d1ilt"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://bdkvxp7gjcu2f" path="res://Models/Floating Spirit Fire_Floating Spirit Texture Fire.png" id="13_wsu2k"]
 [ext_resource type="PackedScene" uid="uid://cb8q5p4oa17l" path="res://Models/stylized_flame/flame.tscn" id="14_jkdf5"]
 [ext_resource type="Texture2D" uid="uid://doud71ruqwr2n" path="res://Models/Skeleton/GameBoyColor/base.png" id="15_wsu2k"]
+[ext_resource type="Texture2D" uid="uid://dy5m80uxa2rec" path="res://Models/Skeleton/Variant2/base.png" id="19_ueoa1"]
 [ext_resource type="PackedScene" uid="uid://cuwku0n7dum8p" path="res://Models/Fantasy Props/Exports/glTF/Stall_Cart_Empty.gltf" id="20_ee4r6"]
 [ext_resource type="PackedScene" uid="uid://cjwcky1wp2oc2" path="res://Models/Fantasy Props/Exports/glTF/Pouch_Large.gltf" id="21_gt3je"]
 [ext_resource type="PackedScene" uid="uid://dgve6gk85dvg6" path="res://Models/Fantasy Props/Exports/glTF/Crate_Wooden.gltf" id="22_3pmx8"]
@@ -660,6 +661,9 @@ bind/20/name = &"foot.R"
 bind/20/bone = -1
 bind/20/pose = Transform3D(0.48069113, -1.8354635e-06, -4.2909707e-07, -2.5100582e-07, -0.096805885, 0.46955487, -1.1494408e-06, -0.441895, -0.10286544, 0.34391025, -0.017181188, -1.0400426)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6vcvc"]
+albedo_texture = ExtResource("19_ueoa1")
+
 [sub_resource type="Animation" id="Animation_k12tt"]
 length = 0.001
 tracks/0/type = "rotation_3d"
@@ -1121,6 +1125,48 @@ transform = Transform3D(1, 0, 0, 0, 0.45465922, 0.8906655, 0, -0.8906655, 0.4546
 [node name="alley" parent="." instance=ExtResource("10_fevyy")]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -25.78383, -17.364742, 15.836538)
 
+[node name="OmniLight3D" type="OmniLight3D" parent="alley"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2934017, 9.629131, -0.28497553)
+light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
+light_energy = 5.0
+light_specular = 0.0
+omni_range = 15.356325
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="alley"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.139888, 7.8841443, -11.677551)
+light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
+light_energy = 5.0
+light_specular = 0.0
+omni_range = 18.01093
+
+[node name="OmniLight3D5" type="OmniLight3D" parent="alley"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.970913, 9.135008, -7.020442)
+light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
+light_energy = 5.0
+light_specular = 0.0
+omni_range = 16.139753
+
+[node name="OmniLight3D6" type="OmniLight3D" parent="alley"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.96534, 9.135008, -2.8782928)
+light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
+light_energy = 5.0
+light_specular = 0.0
+omni_range = 17.456556
+
+[node name="OmniLight3D4" type="OmniLight3D" parent="alley"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.261303, 8.765671, -13.364281)
+light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
+light_energy = 3.0
+light_specular = 0.0
+omni_range = 14.851013
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="alley"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4276094, 8.933447, 2.8317585)
+light_color = Color(0.8392157, 0.5529412, 0.36862746, 1)
+light_energy = 5.0
+light_specular = 0.0
+omni_range = 15.78904
+
 [node name="Floating Spirit Fire" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.169468, -0.4025203, -6.485569)
 script = ExtResource("12_fdnlq")
@@ -1290,6 +1336,7 @@ bones/20/scale = Vector3(1, 0.99999994, 1)
 [node name="Cube" type="MeshInstance3D" parent="skeleton/metarig/Skeleton3D"]
 mesh = SubResource("ArrayMesh_fv0ne")
 skin = SubResource("Skin_2g0k6")
+surface_material_override/0 = SubResource("StandardMaterial3D_6vcvc")
 
 [node name="Camera" type="Camera3D" parent="skeleton"]
 transform = Transform3D(0.6235158, -0.004865447, 0.34843725, -2.2002496e-07, 0.7142161, 0.009973438, -0.34847122, -0.008706142, 0.623455, 6.652506, 0.19976896, 11.575218)
@@ -1327,13 +1374,13 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 1.1989603
+light_energy = 2.2731104
 shadow_enabled = true
-omni_range = 1.8555
+omni_range = 3.2598803
 script = ExtResource("23_1w6v2")
-base_energy = 1.5
+base_energy = 3.0
 flicker_speed = 3.0
-flicker_intensity = 0.8
+flicker_intensity = 5.0
 
 [node name="Barrel2" parent="Decoration" instance=ExtResource("22_u50mg")]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 1.4243875, -3.3090487, -17.57869)
@@ -1347,13 +1394,13 @@ transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.0397216
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 1.0681672
+light_energy = 2.9234562
 shadow_enabled = true
-omni_range = 1.8555
+omni_range = 2.0377367
 script = ExtResource("23_1w6v2")
-base_energy = 1.5
-flicker_speed = 7.0
-flicker_intensity = 0.8
+base_energy = 3.0
+flicker_speed = 3.0
+flicker_intensity = 5.0
 
 [node name="Cage_Small2" parent="Decoration" instance=ExtResource("25_u50mg")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 4.4573255, -0.43034738, -17.286371)
