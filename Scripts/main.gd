@@ -222,16 +222,33 @@ func shoot_soul_to_scales(start_pos: Vector3, is_player: bool, effect: String, v
 	var tween = create_tween()
 	tween.tween_property(soul, "global_position", end_pos, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 	
-	# 5. ОЖИДАНИЕ ПРИБЫТИЯ
+# 5. ОЖИДАНИЕ ПРИБЫТИЯ
 	await get_tree().create_timer(duration).timeout
 	
-	# 6. УДАР О ВЕСЫ И ПОСЛЕДСТВИЯ
+	# 6. УДАР О ВЕСЫ И ВЗРЫВ
 	if is_instance_valid(soul):
-		soul.queue_free()
+		# 1. Выключаем частицы полета (хвост)
+		var emitters = soul.get_node_or_null("Emitters")
+		if emitters:
+			for child in emitters.get_children():
+				child.emitting = false
+				
+		# 2. Включаем частицы взрыва
+		var impact = soul.get_node_or_null("Impact")
+		if impact:
+			for child in impact.get_children():
+				if child.has_method("restart"):
+					child.restart() # Сбрасываем таймер частиц
+				child.emitting = true
+				
+		# 3. Оставляем снаряд "догорать" на 1.5 секунды, а затем удаляем
+		get_tree().create_timer(1.5).timeout.connect(soul.queue_free)
 	
-	# Спавн визуала
+	# Спавн текста урона
 	spawn_floating_text(end_pos, effect, value)
-	spawn_particles(end_pos, effect)
+	
+	# ВАЖНО: Функцию spawn_particles() можно вообще удалить из скрипта, 
+	# так как теперь взрывы работают прямо внутри самих снарядов!
 	
 	# Физический пинок весам
 	scale_jolt = -15.0 if is_player else 15.0 

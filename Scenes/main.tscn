@@ -6,13 +6,13 @@
 [ext_resource type="PackedScene" uid="uid://x64jbba22iyr" path="res://Scenes/particles_heal.tscn" id="4_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://cda2dkjph4cjr" path="res://Scenes/particles_damage.tscn" id="5_jkdf5"]
 [ext_resource type="PackedScene" uid="uid://ttjfpgfukrk6" path="res://projectiles/projectile_2.tscn" id="6_fevyy"]
-[ext_resource type="PackedScene" uid="uid://caut0ksw5mbrn" path="res://Models/gltf/gltf/table_medium.gltf" id="6_wsu2k"]
 [ext_resource type="PackedScene" uid="uid://d01ixx2i2mobc" path="res://projectiles/projectile_2_damage.tscn" id="7_fevyy"]
 [ext_resource type="FontFile" uid="uid://b1a3sjwqi25vk" path="res://TrueType (.ttf)/Kurland-Regular.ttf" id="7_k12tt"]
 [ext_resource type="Texture2D" uid="uid://cggav1mkrk7fq" path="res://Models/baseColor.jpg" id="8_h1bgf"]
 [ext_resource type="PackedScene" uid="uid://bdwod6p1kssw" path="res://projectiles/projectile_2_poison.tscn" id="8_hibaj"]
 [ext_resource type="Texture2D" uid="uid://b84vra4mwvult" path="res://Models/baseColor.jpg.jpg" id="9_b3802"]
 [ext_resource type="PackedScene" uid="uid://btf02ntpmsq83" path="res://projectiles/projectile_2_shield.tscn" id="9_pdsj5"]
+[ext_resource type="PackedScene" uid="uid://cs73tlhdbduej" path="res://Models/wooden_table/scene.gltf" id="10_e08e2"]
 [ext_resource type="PackedScene" uid="uid://st8c02y1uc12" path="res://Scenes/alley.tscn" id="10_fevyy"]
 [ext_resource type="Texture2D" uid="uid://co86thogsij4d" path="res://Models/Floating Spirit Fire - For Godot_Floating Spirit Texture Fire.png" id="12_6iyac"]
 [ext_resource type="Script" uid="uid://cndn31ghd360t" path="res://Scripts/floating_spirit_fire.gd" id="12_fdnlq"]
@@ -35,7 +35,7 @@
 [ext_resource type="AudioStream" uid="uid://inqoretwnfnd" path="res://mixkit-light-rain-loop-2393.wav" id="35_r33sp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1bvp3"]
-size = Vector3(5.894287, 0.5, 5.9328003)
+size = Vector3(3.6172943, 0.5, 5.965996)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2yge"]
 bg_color = Color(2.6471912e-06, 0.63661957, 0.2811313, 1)
@@ -936,13 +936,14 @@ light_angular_distance = 6.0
 shadow_enabled = true
 
 [node name="Table" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.3121812)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Table"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5794004, -0.45937717, -1.7162967)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.423097, -0.035705864, -0.9784694)
 shape = SubResource("BoxShape3D_1bvp3")
 
-[node name="table_medium2" parent="Table" instance=ExtResource("6_wsu2k")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0.5861964, -3.2265532, -1.7251761)
+[node name="wood_table" parent="Table" instance=ExtResource("10_e08e2")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0.42914987, -1.3739359, -0.958858)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -1006,7 +1007,7 @@ offset_right = 1109.0
 offset_bottom = 90.0
 
 [node name="весы" type="Node3D" parent="."]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -1.5144948, 0.73466283, -1.8248546)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.83611196, 1.1422081, -1.8248546)
 
 [node name="Основа" type="MeshInstance3D" parent="весы"]
 mesh = SubResource("ArrayMesh_yk76t")
@@ -1212,7 +1213,7 @@ skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_jkdf5")
 
 [node name="skeleton" type="Node3D" parent="."]
-transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0.7629416, 2.3841858e-07, -6.458288)
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0.5090389, 2.3841858e-07, -7.2709227)
 
 [node name="metarig" type="Node3D" parent="skeleton"]
 transform = Transform3D(2.0803425, 0, 0, 0, 2.2105596, 0, 0, 0, 2.0803425, 0, -2.3521178, 0)
@@ -1407,7 +1408,7 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 3.836663
+light_energy = -0.05537939
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1429,7 +1430,7 @@ transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.0397216
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 3.566983
+light_energy = 2.222023
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0

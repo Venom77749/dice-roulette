@@ -1,4 +1,4 @@
-[gd_scene load_steps=72 format=3 uid="uid://bdwod6p1kssw"]
+[gd_scene load_steps=71 format=3 uid="uid://bdwod6p1kssw"]
 
 [ext_resource type="ArrayMesh" uid="uid://cyfec8fn7iyfr" path="res://projectiles/meshes/projectile3.res" id="1_j7lwc"]
 [ext_resource type="Texture2D" uid="uid://bmcs76peek7na" path="res://projectiles/textures/radial1.png" id="2_f6lau"]
@@ -15,15 +15,8 @@
 script/source = "@tool
 extends Node3D
 
-const TRAIL := preload(\"res://projectiles/scripts/trail3d.gd\")
-
-@export var speed := 10.0
 @export var fade_time := 0.3
 @export_storage var lifetime := 5.0
-
-var age := 0.0
-var direction := Vector3(0, 0, 1)
-var collided := false
 
 var list := [
 	[ \"Lifetime\", [
@@ -54,61 +47,7 @@ func _ready() -> void:
 		for e in $Emitters.get_children():
 			e.restart()
 
-func _process(delta: float) -> void:
-	if Engine.is_editor_hint():
-		return
-	age += delta
-	if collided:
-		var s: float = $TrailPrefab.scale.y
-		if s > 0.01:
-			$TrailPrefab.scale.y = min(s, max(0.001, $TrailPrefab.scale.y - delta * (1.0 / maxf(fade_time, 0.01))))
-	else:
-		var ft := minf(lifetime, fade_time)
-		var fade_progress: float = age - (lifetime - ft)
-		if fade_progress > 0:
-			var t := clampf(fade_progress / ft, 0.0, 1.0)
-			var s := maxf(1.0 - t, 0.001)
-			get_node(\"Emitters\").scale = Vector3(s, s, s)
-			get_node(\"TrailPrefab\").scale = Vector3(s, s, s)
-			for e in get_node(\"Emitters\").get_children():
-				e.emitting = false
-	if age > lifetime + 0.5:
-		queue_free()
-
-func _physics_process(delta: float) -> void:
-	if Engine.is_editor_hint():
-		return
-	var motion := direction * delta * speed
-	if collided:
-		$Emitters.position += Vector3(0, 0, 1) * delta * speed
-		return
-	position += motion
-	if age > lifetime:
-		return
-	var collision: KinematicCollision3D = $CharacterBody3D.move_and_collide(motion)
-	if collision:
-		explode()
-
-func launch(dir: Vector3) -> void:
-	dir = dir.normalized()
-	direction = dir
-	$CharacterBody3D.position = global_position
-	var right := Vector3(0, 1, 0).cross(dir).normalized()
-	var up := dir.cross(right).normalized()
-	basis = Basis(
-		right * scale.x,
-		up * scale.y,
-		dir * scale.z
-	)
-
-func explode() -> void:
-	collided = true
-	for e in $Emitters.get_children():
-		e.emitting = false
-		if e.one_shot:
-			e.visible = false
-	for e in $Impact.get_children():
-		e.restart()
+# ВСЯ ФИЗИКА И ДВИЖЕНИЕ УДАЛЕНЫ, ТАК КАК ЭТИМ ТЕПЕРЬ УПРАВЛЯЕТ main.gd ЧЕРЕЗ TWEEN
 
 func _get_property_list() -> Array[Dictionary]:
 	if !is_inside_tree() or !Engine.is_editor_hint():
@@ -203,19 +142,6 @@ func find_property(property: StringName) -> Dictionary:
 			return { \"node\": node, \"object\": obj, \"property\": prop.property }
 	return {}
 "
-
-[sub_resource type="Gradient" id="Gradient_n4cs8"]
-colors = PackedColorArray(0.37208948, 0.008710125, 0.4873196, 1, 0.99540323, 0.32530585, 0.87589115, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_64ava"]
-gradient = SubResource("Gradient_n4cs8")
-
-[sub_resource type="Gradient" id="Gradient_5l1nh"]
-colors = PackedColorArray(0.66239995, 0.9, 0.504, 1, 0.08799999, 0.12, 0.023999998, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_befew"]
-gradient = SubResource("Gradient_5l1nh")
-metadata/uniform_name = "u_m6_rgb"
 
 [sub_resource type="Shader" id="Shader_5kh7j"]
 code = "shader_type spatial;
@@ -572,7 +498,7 @@ void process() {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_044he"]
 shader = SubResource("Shader_u1cq4")
-shader_parameter/initial_color = Color(0.508, 1, 0.27999997, 1)
+shader_parameter/initial_color = Color(0.8312982, 6.8345666e-06, 0.53568935, 1)
 
 [sub_resource type="Shader" id="Shader_jfwoh"]
 code = "shader_type particles;
@@ -872,7 +798,7 @@ void process() {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1n653"]
 shader = SubResource("Shader_jfwoh")
-shader_parameter/u_m1_rgb = Color(0.67296, 0.96, 0.5856, 1)
+shader_parameter/u_m1_rgb = Color(1, 0.80561525, 0.90247536, 1)
 
 [sub_resource type="Shader" id="Shader_164wx"]
 code = "shader_type spatial;
@@ -1259,7 +1185,7 @@ metadata/uniform_name = "u_m3_scale"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_03eoy"]
 shader = SubResource("Shader_lwnm3")
-shader_parameter/u_m0_rgb = Color(0.67296, 0.96, 0.5856, 1)
+shader_parameter/u_m0_rgb = Color(1, 0.80561525, 0.90247536, 1)
 shader_parameter/u_m2_alpha = SubResource("CurveTexture_lpwjr")
 shader_parameter/u_m3_scale = SubResource("CurveTexture_8t2p2")
 
@@ -1646,7 +1572,7 @@ metadata/uniform_name = "u_m3_scale"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vr78c"]
 shader = SubResource("Shader_8qb07")
-shader_parameter/u_m0_rgb = Color(0.67296, 0.96, 0.5856, 1)
+shader_parameter/u_m0_rgb = Color(1, 0.80561525, 0.90247536, 1)
 shader_parameter/u_m2_alpha = SubResource("CurveTexture_wqn7f")
 shader_parameter/u_m3_scale = SubResource("CurveTexture_5hrkl")
 
@@ -1974,7 +1900,7 @@ metadata/uniform_name = "u_m4_scale"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uelr4"]
 shader = SubResource("Shader_abevs")
-shader_parameter/u_m1_rgb = Color(0.67296, 0.96, 0.5856, 1)
+shader_parameter/u_m1_rgb = Color(1, 0.80561525, 0.90247536, 1)
 shader_parameter/u_m3_alpha = SubResource("CurveTexture_otapb")
 shader_parameter/u_m4_scale = SubResource("CurveTexture_xacca")
 
@@ -2434,7 +2360,7 @@ metadata/uniform_name = "u_m8_scale"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qe6yg"]
 shader = SubResource("Shader_yaoh3")
-shader_parameter/initial_color = Color(0.67296, 0.96, 0.5856, 1)
+shader_parameter/initial_color = Color(1, 0.80561525, 0.90247536, 1)
 shader_parameter/u_m7_scale_x = SubResource("CurveTexture_g2xmg")
 shader_parameter/u_m7_scale_y = SubResource("CurveTexture_m74aw")
 shader_parameter/u_m7_scale_z = SubResource("CurveTexture_cyweo")
@@ -2932,6 +2858,13 @@ point_count = 3
 curve = SubResource("Curve_e3433")
 metadata/uniform_name = "u_m3_scale"
 
+[sub_resource type="Gradient" id="Gradient_5l1nh"]
+colors = PackedColorArray(0.98366493, 0.7044431, 1, 1, 0.19078073, 4.5146644e-05, 0.20907655, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_befew"]
+gradient = SubResource("Gradient_5l1nh")
+metadata/uniform_name = "u_m6_rgb"
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uwnwv"]
 shader = SubResource("Shader_3nuob")
 shader_parameter/u_m3_scale = SubResource("CurveTexture_qa1km")
@@ -2964,6 +2897,12 @@ void fragment()
 	ALBEDO = texture(gradient, vec2(ALPHA)).rgb * emission;
 }"
 
+[sub_resource type="Gradient" id="Gradient_n4cs8"]
+colors = PackedColorArray(0.37208948, 0.008710125, 0.4873196, 1, 0.99540323, 0.32530585, 0.87589115, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_64ava"]
+gradient = SubResource("Gradient_n4cs8")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_shbj1"]
 render_priority = 0
 shader = SubResource("Shader_1rx6d")
@@ -2981,19 +2920,9 @@ shader_parameter/distortion_intensity = 1.0
 _data = [Vector2(0, 1), 0.0, -0.5133404, 0, 1, Vector2(1, 0.4866596), -0.5133404, 0.0, 1, 0]
 point_count = 2
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_iaavq"]
-radius = 0.1
-
 [node name="Node3D" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.041517615, 0, 0)
 script = SubResource("GDScript_ctic6")
-speed = 0.0
-lifetime = 1.0
-Lifetime = 1.0
-"Main Color" = Color(0.67296, 0.96, 0.5856, 1)
-"Projectile Color" = Color(0.508, 1, 0.27999997, 1)
-"Trail Color" = SubResource("GradientTexture1D_64ava")
-"Smoke Color" = SubResource("GradientTexture1D_befew")
 
 [node name="Emitters" type="Node3D" parent="."]
 
@@ -3103,10 +3032,3 @@ script = ExtResource("10_3b1y2")
 width = 0.05
 width_over_lifetime = SubResource("Curve_qyeq5")
 lifetime = 0.5
-
-[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
-top_level = true
-collision_layer = 0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
-shape = SubResource("SphereShape3D_iaavq")

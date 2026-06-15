@@ -63,7 +63,6 @@ func setup(round_num: int) -> void:
 			hidden_effect = "poison"
 
 func get_top_number() -> int:
-	# ... твой код без изменений ...
 	var up_vector = Vector3.UP
 	var b = global_transform.basis
 	
