@@ -13,6 +13,10 @@ var ai_armor: int = 0
 var player_poison: int = 0
 var ai_poison: int = 0
 
+# поворот камеры
+var center_rot_y: float = 0.0
+var is_at_shop: bool = false
+
 enum DiceType { GOOD, BAD }
 
 # --- ИНТЕРФЕЙС (UI) ---
@@ -74,7 +78,8 @@ func _ready() -> void:
 	if camera:
 		default_pos = camera.global_position
 		default_rot = camera.global_rotation
-	
+		center_rot_y = default_rot.y
+		
 	update_ui()
 	roll_button.pressed.connect(_on_button_pressed)
 	generate_shop()
@@ -82,6 +87,7 @@ func _ready() -> void:
 	shop_button.pressed.connect(_on_shop_button_pressed)
 	
 func _on_button_pressed() -> void:
+	is_at_shop = false
 	# Защита: не даем бросить новые кубики, если старые еще на столе
 	if get_tree().get_nodes_in_group("dice").size() > 0:
 		print("Сначала разберите оставшиеся кубики!")
@@ -91,12 +97,14 @@ func _on_button_pressed() -> void:
 	roll_button.disabled = true
 	is_player_turn = true
 		
-	# Анимация наезда камеры на стол
+# Анимация наезда камеры на стол
 	if camera and camera_target:
+		center_rot_y = camera_target.global_rotation.y # Обновляем центр вращения для стола
+		
 		var tween = create_tween()
-		tween.set_parallel(true) 
-		tween.tween_property(camera, "global_position", camera_target.global_position, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
-		tween.tween_property(camera, "global_rotation", camera_target.global_rotation, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+		# Перемещаем камеру целиком в трансформ маркера стола
+		tween.tween_property(camera, "global_transform", camera_target.global_transform, 1.0)\
+			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 		
 	print("\n=== РАУНД ", current_round, " ===")
 	
@@ -417,12 +425,18 @@ func _input(event: InputEvent) -> void:
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 	if event is InputEventMouseMotion and is_rmb_pressed:
-		if camera:
-			camera.rotation.y -= event.relative.x * mouse_sensitivity
-			camera.rotation.x -= event.relative.y * mouse_sensitivity
-			# Ограничиваем угол, чтобы камера не переворачивалась
-			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
-
+			if camera:
+				camera.rotation.y -= event.relative.x * mouse_sensitivity
+				camera.rotation.x -= event.relative.y * mouse_sensitivity
+				
+				# Вверх/вниз ограничиваем всегда, чтобы не кувыркаться через голову
+				camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-60), deg_to_rad(60))
+				
+				# А вот влево/вправо ограничиваем ТОЛЬКО в магазине
+				if is_at_shop:
+					var limit_y = deg_to_rad(25) # Разрешаем смотреть на 40 градусов
+					camera.rotation.y = clamp(camera.rotation.y, center_rot_y - limit_y, center_rot_y + limit_y)
+				
 func _process(delta: float) -> void:
 	# Физика покачивания весов в зависимости от разницы здоровья
 	var hp_difference = player_hp - ai_hp
@@ -452,23 +466,16 @@ func generate_shop() -> void:
 			new_item.position = Vector3.ZERO
 
 func _on_shop_button_pressed() -> void:
-	# 1. Прячем кнопку
+	is_at_shop = true
 	shop_button.hide()
-	
-	# 2. Спавним товары на тележке
 	generate_shop()
 	
 	print("Добро пожаловать в магазин!")
 	
-	# 3. АНИМАЦИЯ ПОЛЕТА КАМЕРЫ К ТЕЛЕЖКЕ
 	if camera and shop_camera_target:
-		var tween = create_tween()
-		tween.set_parallel(true) # Двигаем и вращаем камеру одновременно
+		center_rot_y = shop_camera_target.global_rotation.y
 		
-		# Плавно меняем позицию за 1.2 секунды
-		tween.tween_property(camera, "global_position", shop_camera_target.global_position, 1.2)\
-			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
-			
-		# Плавно меняем угол обзора
-		tween.tween_property(camera, "global_rotation", shop_camera_target.global_rotation, 1.2)\
+		var tween = create_tween()
+		# Перемещаем ПУТЬ и ПОВОРОТ целиком через трансформ маркера магазина
+		tween.tween_property(camera, "global_transform", shop_camera_target.global_transform, 1.2)\
 			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)

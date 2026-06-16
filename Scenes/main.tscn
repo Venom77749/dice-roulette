@@ -1460,7 +1460,7 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 1.9440367
+light_energy = 3.0674431
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1482,7 +1482,7 @@ transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.0397216
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 3.7674139
+light_energy = 4.138561
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1543,7 +1543,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0,
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch2/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.070608
+light_energy = 20.131947
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1563,7 +1563,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch3/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.144896
+light_energy = 19.86234
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1583,7 +1583,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch4/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 19.864689
+light_energy = 20.00928
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1603,7 +1603,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch5/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 19.92181
+light_energy = 19.890327
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1703,7 +1703,7 @@ volume_db = -20.0
 autoplay = true
 
 [node name="ShopCameraTarget" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.31374, 1.5717148, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -26.31374, 1.5717148, 0)
 
 [editable path="Decoration/Candle_big/fire3"]
 [editable path="Decoration/Candle_small/fire2"]
