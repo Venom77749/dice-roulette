@@ -22,7 +22,8 @@ enum DiceType { GOOD, BAD }
 @onready var ai_hp_bar: ProgressBar = $CanvasLayer/AIHealthBar
 @onready var player_effects_label: Label = $CanvasLayer/PlayerEffects
 @onready var ai_effects_label: Label = $CanvasLayer/AIEffects
-@onready var roll_button: Button = $CanvasLayer/Button # Кэшируем кнопку для управления её активностью
+@onready var roll_button: Button = $CanvasLayer/throw # Кэшируем кнопку для управления её активностью
+@onready var shop_button: Button = $CanvasLayer/ShopButton
 
 # --- ОБЪЕКТЫ НА СЦЕНЕ ---
 @onready var scale_arm: Node3D = $весы/Рука
@@ -34,6 +35,8 @@ enum DiceType { GOOD, BAD }
 # --- КАМЕРА ---
 @onready var camera: Camera3D = $Camera3D
 @onready var camera_target: Marker3D = $CameraTarget
+@onready var shop_camera_target: Marker3D = $ShopCameraTarget
+
 var default_pos: Vector3
 var default_rot: Vector3
 var mouse_sensitivity: float = 0.003
@@ -51,6 +54,15 @@ var is_rmb_pressed: bool = false
 @export var soul_poison: PackedScene
 @export var soul_armor: PackedScene
 
+# Сюда положим shop_item_magnet.tscn
+@export var shop_magnet_scene: PackedScene 
+@onready var shop_slots = [
+	$shop/ItemSpawns/Slot_1,
+	$shop/ItemSpawns/Slot_2,
+	$shop/ItemSpawns/Slot_3,
+	$shop/ItemSpawns/Slot_4
+]
+
 # Динамическая переменная для резкого "вздрагивания" весов
 var scale_jolt: float = 0.0
 
@@ -65,6 +77,9 @@ func _ready() -> void:
 	
 	update_ui()
 	roll_button.pressed.connect(_on_button_pressed)
+	generate_shop()
+	shop_button.hide()
+	shop_button.pressed.connect(_on_shop_button_pressed)
 	
 func _on_button_pressed() -> void:
 	# Защита: не даем бросить новые кубики, если старые еще на столе
@@ -381,6 +396,7 @@ func end_round() -> void:
 	
 	# Снова разрешаем игроку нажать на кнопку
 	roll_button.disabled = false 
+	shop_button.show()
 	
 	if camera:
 		var tween = create_tween()
@@ -422,3 +438,37 @@ func _process(delta: float) -> void:
 	scale_arm.rotation.x = lerp(scale_arm.rotation.x, target_angle, 6.0 * delta)
 	left_weight.rotation.x = -scale_arm.rotation.x
 	right_weight.rotation.x = -scale_arm.rotation.x
+
+func generate_shop() -> void:
+	for slot in shop_slots:
+		# Очищаем слоты на всякий случай
+		for child in slot.get_children():
+			child.queue_free()
+			
+		# Вероятность 70%, что на слоте появится магнит
+		if randf() <= 0.70 and shop_magnet_scene:
+			var new_item = shop_magnet_scene.instantiate()
+			slot.add_child(new_item)
+			new_item.position = Vector3.ZERO
+
+func _on_shop_button_pressed() -> void:
+	# 1. Прячем кнопку
+	shop_button.hide()
+	
+	# 2. Спавним товары на тележке
+	generate_shop()
+	
+	print("Добро пожаловать в магазин!")
+	
+	# 3. АНИМАЦИЯ ПОЛЕТА КАМЕРЫ К ТЕЛЕЖКЕ
+	if camera and shop_camera_target:
+		var tween = create_tween()
+		tween.set_parallel(true) # Двигаем и вращаем камеру одновременно
+		
+		# Плавно меняем позицию за 1.2 секунды
+		tween.tween_property(camera, "global_position", shop_camera_target.global_position, 1.2)\
+			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+			
+		# Плавно меняем угол обзора
+		tween.tween_property(camera, "global_rotation", shop_camera_target.global_rotation, 1.2)\
+			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)

@@ -947,9 +947,39 @@ shape = SubResource("BoxShape3D_1bvp3")
 [node name="wood_table" parent="Table" instance=ExtResource("10_e08e2")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0.42914987, -1.3739359, -0.958858)
 
+[node name="Player_ItemSpawns" type="Node3D" parent="Table"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.02349019)
+
+[node name="P_Slot" type="Marker3D" parent="Table/Player_ItemSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.94101775, 0, 1.1901643)
+
+[node name="P_Slot2" type="Marker3D" parent="Table/Player_ItemSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.026302278, 0, 1.1901643)
+
+[node name="P_Slot3" type="Marker3D" parent="Table/Player_ItemSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7957373, 0, 1.1901643)
+
+[node name="P_Slot4" type="Marker3D" parent="Table/Player_ItemSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6353502, 0, 1.1901643)
+
+[node name="Bot_ItemSpawns" type="Node3D" parent="Table"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.252073)
+
+[node name="B_Slot" type="Marker3D" parent="Table/Bot_ItemSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7503515, 0, 0)
+
+[node name="B_Slot2" type="Marker3D" parent="Table/Bot_ItemSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0004273653, 0, 0)
+
+[node name="B_Slot3" type="Marker3D" parent="Table/Bot_ItemSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.79711205, 0, 0)
+
+[node name="B_Slot4" type="Marker3D" parent="Table/Bot_ItemSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6169765, 0, 0)
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Button" type="Button" parent="CanvasLayer"]
+[node name="throw" type="Button" parent="CanvasLayer"]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -974,10 +1004,14 @@ step = 1.0
 value = 20.0
 
 [node name="AIHealthBar" type="ProgressBar" parent="CanvasLayer"]
-offset_left = 959.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -207.0
 offset_top = 29.0
-offset_right = 1110.0
+offset_right = -56.0
 offset_bottom = 56.0
+grow_horizontal = 0
 theme_override_styles/fill = SubResource("StyleBoxFlat_1bvp3")
 max_value = 20.0
 step = 1.0
@@ -991,10 +1025,14 @@ offset_bottom = 27.0
 theme_override_fonts/font = ExtResource("7_k12tt")
 
 [node name="AIHP" type="Label" parent="CanvasLayer"]
-offset_left = 959.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -207.0
 offset_top = 4.0
-offset_right = 1110.0
+offset_right = -56.0
 offset_bottom = 27.0
+grow_horizontal = 0
 
 [node name="PlayerEffects" type="Label" parent="CanvasLayer"]
 offset_left = 54.0
@@ -1003,10 +1041,25 @@ offset_right = 205.0
 offset_bottom = 90.0
 
 [node name="AIEffects" type="Label" parent="CanvasLayer"]
-offset_left = 959.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -207.0
 offset_top = 68.0
-offset_right = 1109.0
+offset_right = -57.0
 offset_bottom = 90.0
+grow_horizontal = 0
+
+[node name="ShopButton" type="Button" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 34.0
+offset_top = -97.0
+offset_right = 261.0
+offset_bottom = -28.0
+grow_vertical = 0
+text = "Магазин"
 
 [node name="весы" type="Node3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.83611196, 1.1422081, -1.8248546)
@@ -1407,7 +1460,7 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 4.1533365
+light_energy = 1.9440367
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1429,7 +1482,7 @@ transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.0397216
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 4.6102505
+light_energy = 3.7674139
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1477,6 +1530,89 @@ light_specular = 4.0
 shadow_blur = 10.0
 omni_range = 24.540276
 omni_attenuation = 1.2
+
+[node name="torch2" parent="Decoration" instance=ExtResource("35_hdf80")]
+transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, 6.646909, -1.5190917, -1.5273857)
+
+[node name="fire4" parent="Decoration/torch2" instance=ExtResource("14_jkdf5")]
+transform = Transform3D(19.999998, 0, -1.419158e-06, 0, 19.999998, 0, 1.419158e-06, 0, 19.999998, 0.72315216, 42.716835, -0.4703045)
+
+[node name="GPUParticles3D" parent="Decoration/torch2/fire4" index="0"]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0.026311457)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch2/fire4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
+light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
+light_energy = 20.070608
+shadow_enabled = true
+shadow_blur = 4.0
+omni_range = 17.856636
+omni_attenuation = 1.7
+script = ExtResource("23_1w6v2")
+base_energy = 20.0
+
+[node name="torch3" parent="Decoration" instance=ExtResource("35_hdf80")]
+transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, 6.4557066, -1.5190917, 13.495054)
+
+[node name="fire4" parent="Decoration/torch3" instance=ExtResource("14_jkdf5")]
+transform = Transform3D(19.999998, 0, -1.419158e-06, 0, 19.999998, 0, 1.419158e-06, 0, 19.999998, 0.72315216, 42.716835, -0.4703045)
+
+[node name="GPUParticles3D" parent="Decoration/torch3/fire4" index="0"]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.041247845, 0, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch3/fire4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
+light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
+light_energy = 20.144896
+shadow_enabled = true
+shadow_blur = 4.0
+omni_range = 17.856636
+omni_attenuation = 1.7
+script = ExtResource("23_1w6v2")
+base_energy = 20.0
+
+[node name="torch4" parent="Decoration" instance=ExtResource("35_hdf80")]
+transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, -20.023212, -1.5190917, 13.495054)
+
+[node name="fire4" parent="Decoration/torch4" instance=ExtResource("14_jkdf5")]
+transform = Transform3D(19.999998, 0, -1.419158e-06, 0, 19.999998, 0, 1.419158e-06, 0, 19.999998, 0.72315216, 42.716835, -0.4703045)
+
+[node name="GPUParticles3D" parent="Decoration/torch4/fire4" index="0"]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.035806656, 0, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch4/fire4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
+light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
+light_energy = 19.864689
+shadow_enabled = true
+shadow_blur = 4.0
+omni_range = 17.856636
+omni_attenuation = 1.7
+script = ExtResource("23_1w6v2")
+base_energy = 20.0
+
+[node name="torch5" parent="Decoration" instance=ExtResource("35_hdf80")]
+transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, -19.915638, -1.5190917, -18.73442)
+
+[node name="fire4" parent="Decoration/torch5" instance=ExtResource("14_jkdf5")]
+transform = Transform3D(19.999998, 0, -1.419158e-06, 0, 19.999998, 0, 1.419158e-06, 0, 19.999998, 0.72315216, 42.716835, -0.4703045)
+
+[node name="GPUParticles3D" parent="Decoration/torch5/fire4" index="0"]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.035806656, 0, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch5/fire4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
+light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
+light_energy = 19.92181
+shadow_enabled = true
+shadow_blur = 4.0
+omni_range = 17.856636
+omni_attenuation = 1.7
+script = ExtResource("23_1w6v2")
+base_energy = 20.0
+
+[node name="wanted" parent="Decoration" instance=ExtResource("34_neg2b")]
+transform = Transform3D(-0.049999982, 4.3711395e-09, -1.9106858e-16, 0, -2.1855697e-09, -0.05000001, -4.3711372e-09, -0.05000001, 2.1855697e-09, -13.535463, 3.4596872, 14.939655)
 
 [node name="shop" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.378263, -2.9657266, 0)
@@ -1566,98 +1702,16 @@ stream = ExtResource("35_r33sp")
 volume_db = -20.0
 autoplay = true
 
-[node name="wanted" parent="." instance=ExtResource("34_neg2b")]
-transform = Transform3D(-0.049999982, 4.3711395e-09, -1.9106858e-16, 0, -2.1855697e-09, -0.05000001, -4.3711372e-09, -0.05000001, 2.1855697e-09, -13.535463, 3.4596872, 14.939655)
-
-[node name="torch2" parent="." instance=ExtResource("35_hdf80")]
-transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, 6.646909, -1.5190917, -1.5273857)
-
-[node name="fire4" parent="torch2" instance=ExtResource("14_jkdf5")]
-transform = Transform3D(19.999998, 0, -1.419158e-06, 0, 19.999998, 0, 1.419158e-06, 0, 19.999998, 0.72315216, 42.716835, -0.4703045)
-
-[node name="GPUParticles3D" parent="torch2/fire4" index="0"]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0.026311457)
-
-[node name="OmniLight3D" type="OmniLight3D" parent="torch2/fire4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
-light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.11623
-shadow_enabled = true
-shadow_blur = 4.0
-omni_range = 17.856636
-omni_attenuation = 1.7
-script = ExtResource("23_1w6v2")
-base_energy = 20.0
-
-[node name="torch3" parent="." instance=ExtResource("35_hdf80")]
-transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, 6.4557066, -1.5190917, 13.495054)
-
-[node name="fire4" parent="torch3" instance=ExtResource("14_jkdf5")]
-transform = Transform3D(19.999998, 0, -1.419158e-06, 0, 19.999998, 0, 1.419158e-06, 0, 19.999998, 0.72315216, 42.716835, -0.4703045)
-
-[node name="GPUParticles3D" parent="torch3/fire4" index="0"]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.041247845, 0, 0)
-
-[node name="OmniLight3D" type="OmniLight3D" parent="torch3/fire4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
-light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.053253
-shadow_enabled = true
-shadow_blur = 4.0
-omni_range = 17.856636
-omni_attenuation = 1.7
-script = ExtResource("23_1w6v2")
-base_energy = 20.0
-
-[node name="torch4" parent="." instance=ExtResource("35_hdf80")]
-transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, -20.023212, -1.5190917, 13.495054)
-
-[node name="fire4" parent="torch4" instance=ExtResource("14_jkdf5")]
-transform = Transform3D(19.999998, 0, -1.419158e-06, 0, 19.999998, 0, 1.419158e-06, 0, 19.999998, 0.72315216, 42.716835, -0.4703045)
-
-[node name="GPUParticles3D" parent="torch4/fire4" index="0"]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.035806656, 0, 0)
-
-[node name="OmniLight3D" type="OmniLight3D" parent="torch4/fire4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
-light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.105555
-shadow_enabled = true
-shadow_blur = 4.0
-omni_range = 17.856636
-omni_attenuation = 1.7
-script = ExtResource("23_1w6v2")
-base_energy = 20.0
-
-[node name="torch5" parent="." instance=ExtResource("35_hdf80")]
-transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, -19.915638, -1.5190917, -18.73442)
-
-[node name="fire4" parent="torch5" instance=ExtResource("14_jkdf5")]
-transform = Transform3D(19.999998, 0, -1.419158e-06, 0, 19.999998, 0, 1.419158e-06, 0, 19.999998, 0.72315216, 42.716835, -0.4703045)
-
-[node name="GPUParticles3D" parent="torch5/fire4" index="0"]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.035806656, 0, 0)
-
-[node name="OmniLight3D" type="OmniLight3D" parent="torch5/fire4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
-light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 19.959848
-shadow_enabled = true
-shadow_blur = 4.0
-omni_range = 17.856636
-omni_attenuation = 1.7
-script = ExtResource("23_1w6v2")
-base_energy = 20.0
-
-[node name="Area3D" type="Area3D" parent="."]
+[node name="ShopCameraTarget" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.31374, 1.5717148, 0)
 
 [editable path="Decoration/Candle_big/fire3"]
 [editable path="Decoration/Candle_small/fire2"]
+[editable path="Decoration/torch2/fire4"]
+[editable path="Decoration/torch3/fire4"]
+[editable path="Decoration/torch4/fire4"]
+[editable path="Decoration/torch5/fire4"]
 [editable path="shop/CandleStick_Triple3/fire2"]
 [editable path="shop/CandleStick_Triple3/fire3"]
 [editable path="shop/CandleStick_Triple3/fire4"]
 [editable path="shop/Candle_big/fire3"]
-[editable path="torch2/fire4"]
-[editable path="torch3/fire4"]
-[editable path="torch4/fire4"]
-[editable path="torch5/fire4"]
