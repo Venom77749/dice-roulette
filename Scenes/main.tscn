@@ -1,4 +1,4 @@
-[gd_scene load_steps=94 format=4 uid="uid://djy86rlauvp15"]
+[gd_scene load_steps=99 format=4 uid="uid://djy86rlauvp15"]
 
 [ext_resource type="Script" uid="uid://ddxe01wwtpo4m" path="res://Scripts/main.gd" id="1_hptm8"]
 [ext_resource type="PackedScene" uid="uid://5xj2w51u4j8w" path="res://Scenes/physics_dice.tscn" id="2_d1ilt"]
@@ -14,10 +14,14 @@
 [ext_resource type="PackedScene" uid="uid://btf02ntpmsq83" path="res://projectiles/projectile_2_shield.tscn" id="9_pdsj5"]
 [ext_resource type="PackedScene" uid="uid://cs73tlhdbduej" path="res://Models/wooden_table/scene.gltf" id="10_e08e2"]
 [ext_resource type="PackedScene" uid="uid://st8c02y1uc12" path="res://Scenes/alley.tscn" id="10_fevyy"]
+[ext_resource type="PackedScene" uid="uid://c1f8qc5qvd8yo" path="res://Scenes/shop_item_magnet.tscn" id="10_hdf80"]
+[ext_resource type="PackedScene" uid="uid://c5s62abcmcfb" path="res://Models/coin/scene.gltf" id="11_k2e45"]
 [ext_resource type="Texture2D" uid="uid://co86thogsij4d" path="res://Models/Floating Spirit Fire - For Godot_Floating Spirit Texture Fire.png" id="12_6iyac"]
 [ext_resource type="Script" uid="uid://cndn31ghd360t" path="res://Scripts/floating_spirit_fire.gd" id="12_fdnlq"]
 [ext_resource type="Texture2D" uid="uid://bdkvxp7gjcu2f" path="res://Models/Floating Spirit Fire_Floating Spirit Texture Fire.png" id="13_wsu2k"]
 [ext_resource type="PackedScene" uid="uid://cb8q5p4oa17l" path="res://Models/stylized_flame/flame.tscn" id="14_jkdf5"]
+[ext_resource type="PackedScene" uid="uid://bijxp840000et" path="res://Scenes/coin_bag_ui.tscn" id="14_k2e45"]
+[ext_resource type="Script" uid="uid://bjs3cgvo1myx" path="res://Models/coin/coin.gd" id="15_536cc"]
 [ext_resource type="PackedScene" uid="uid://xu0itbujwlnc" path="res://Models/Fantasy Props/Exports/glTF/Bench.gltf" id="15_kltya"]
 [ext_resource type="Texture2D" uid="uid://doud71ruqwr2n" path="res://Models/Skeleton/GameBoyColor/base.png" id="15_wsu2k"]
 [ext_resource type="Texture2D" uid="uid://dy5m80uxa2rec" path="res://Models/Skeleton/Variant2/base.png" id="19_ueoa1"]
@@ -44,6 +48,10 @@ bg_color = Color(2.6471912e-06, 0.63661957, 0.2811313, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bvp3"]
 bg_color = Color(1, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_536cc"]
+font_size = 64
+font_color = Color(1, 0.75686276, 0.13725491, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_28yie"]
 resource_name = "tripo_node_c4ab6a98-4e57-4e43-a42f-4ab8daab790e_material"
@@ -916,16 +924,22 @@ albedo_color = Color(0.42745098, 0.47843137, 0.58431375, 0.27450982)
 material = SubResource("StandardMaterial3D_ueoa1")
 size = Vector3(0.02, 0.5, 0.02)
 
-[node name="GameManager" type="Node3D"]
+[node name="GameManager" type="Node3D" node_paths=PackedStringArray("ui_viewport", "ui_bag", "coin_spawn_point", "coin_drop_point")]
 script = ExtResource("1_hptm8")
 dice_scene = ExtResource("2_d1ilt")
 floating_text_scene = ExtResource("3_6iyac")
 heal_particles_scene = ExtResource("4_fdnlq")
 damage_particles_scene = ExtResource("5_jkdf5")
+shop_magnet_scene = ExtResource("10_hdf80")
 soul_heal = ExtResource("6_fevyy")
 soul_damage = ExtResource("7_fevyy")
 soul_poison = ExtResource("8_hibaj")
 soul_armor = ExtResource("9_pdsj5")
+coin_3d_scene = ExtResource("11_k2e45")
+ui_viewport = NodePath("CanvasLayer/BagUI/SubViewport")
+ui_bag = NodePath("CanvasLayer/BagUI/SubViewport/Bag2")
+coin_spawn_point = NodePath("CanvasLayer/BagUI/SubViewport/CoinSpawnPoint")
+coin_drop_point = NodePath("CanvasLayer/BagUI/SubViewport/CoinDropPoint")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.9373429, 0.34840834, 0, -0.34840834, 0.9373429, 0.57875896, 2.0741458, 2.0821667)
@@ -1060,6 +1074,62 @@ offset_right = 261.0
 offset_bottom = -28.0
 grow_vertical = 0
 text = "Магазин"
+
+[node name="BagUI" parent="CanvasLayer" instance=ExtResource("14_k2e45")]
+
+[node name="MoneyUI" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 383.0
+offset_top = -97.0
+offset_right = 583.0
+offset_bottom = -29.0
+grow_vertical = 0
+pivot_offset = Vector2(125, 200)
+
+[node name="MoneyLabel" type="Label" parent="CanvasLayer/MoneyUI"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 83.0
+offset_top = -68.0
+offset_right = 166.0
+grow_vertical = 0
+text = "x 0"
+label_settings = SubResource("LabelSettings_536cc")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer/MoneyUI"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = -61.0
+offset_right = 82.0
+offset_bottom = 3.0
+grow_vertical = 0
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="CanvasLayer/MoneyUI/SubViewportContainer"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+msaa_3d = 2
+size = Vector2i(64, 64)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="CanvasLayer/MoneyUI/SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.30807102)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="CanvasLayer/MoneyUI/SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.8289206)
+light_color = Color(0.8156863, 0.4509804, 0, 1)
+
+[node name="coin" parent="CanvasLayer/MoneyUI/SubViewportContainer/SubViewport" instance=ExtResource("11_k2e45")]
+script = ExtResource("15_536cc")
 
 [node name="весы" type="Node3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.83611196, 1.1422081, -1.8248546)
@@ -1460,7 +1530,7 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 3.0674431
+light_energy = 4.212732
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1482,7 +1552,7 @@ transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.0397216
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 4.138561
+light_energy = 1.650234
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1543,7 +1613,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0,
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch2/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.131947
+light_energy = 19.979187
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1563,7 +1633,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch3/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 19.86234
+light_energy = 20.068577
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1583,7 +1653,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch4/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.00928
+light_energy = 19.935143
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1603,7 +1673,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch5/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 19.890327
+light_energy = 19.94568
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1705,6 +1775,7 @@ autoplay = true
 [node name="ShopCameraTarget" type="Marker3D" parent="."]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -26.31374, 1.5717148, 0)
 
+[editable path="CanvasLayer/BagUI"]
 [editable path="Decoration/Candle_big/fire3"]
 [editable path="Decoration/Candle_small/fire2"]
 [editable path="Decoration/torch2/fire4"]
