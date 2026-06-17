@@ -1,4 +1,4 @@
-[gd_scene load_steps=100 format=4 uid="uid://djy86rlauvp15"]
+[gd_scene load_steps=102 format=4 uid="uid://djy86rlauvp15"]
 
 [ext_resource type="Script" uid="uid://ddxe01wwtpo4m" path="res://Scripts/main.gd" id="1_hptm8"]
 [ext_resource type="PackedScene" uid="uid://5xj2w51u4j8w" path="res://Scenes/physics_dice.tscn" id="2_d1ilt"]
@@ -19,9 +19,11 @@
 [ext_resource type="Texture2D" uid="uid://co86thogsij4d" path="res://Models/Floating Spirit Fire - For Godot_Floating Spirit Texture Fire.png" id="12_6iyac"]
 [ext_resource type="PackedScene" uid="uid://dik6q2jrl334t" path="res://Scenes/item_magnet.tscn" id="12_aqgau"]
 [ext_resource type="Script" uid="uid://cndn31ghd360t" path="res://Scripts/floating_spirit_fire.gd" id="12_fdnlq"]
+[ext_resource type="PackedScene" uid="uid://cvn6oprf5310s" path="res://Scenes/shop_item_antidote.tscn" id="13_o1aky"]
 [ext_resource type="Texture2D" uid="uid://bdkvxp7gjcu2f" path="res://Models/Floating Spirit Fire_Floating Spirit Texture Fire.png" id="13_wsu2k"]
 [ext_resource type="PackedScene" uid="uid://cb8q5p4oa17l" path="res://Models/stylized_flame/flame.tscn" id="14_jkdf5"]
 [ext_resource type="PackedScene" uid="uid://bijxp840000et" path="res://Scenes/coin_bag_ui.tscn" id="14_k2e45"]
+[ext_resource type="PackedScene" uid="uid://dc8wk361wa34b" path="res://Scenes/item_antidote.tscn" id="14_kwxat"]
 [ext_resource type="Script" uid="uid://bjs3cgvo1myx" path="res://Models/coin/coin.gd" id="15_536cc"]
 [ext_resource type="PackedScene" uid="uid://xu0itbujwlnc" path="res://Models/Fantasy Props/Exports/glTF/Bench.gltf" id="15_kltya"]
 [ext_resource type="Texture2D" uid="uid://doud71ruqwr2n" path="res://Models/Skeleton/GameBoyColor/base.png" id="15_wsu2k"]
@@ -942,6 +944,8 @@ ui_bag = NodePath("CanvasLayer/BagUI/SubViewport/Bag2")
 coin_spawn_point = NodePath("CanvasLayer/BagUI/SubViewport/CoinSpawnPoint")
 coin_drop_point = NodePath("CanvasLayer/BagUI/SubViewport/CoinDropPoint")
 table_magnet_scene = ExtResource("12_aqgau")
+shop_antidote_scene = ExtResource("13_o1aky")
+table_antidote_scene = ExtResource("14_kwxat")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.9373429, 0.34840834, 0, -0.34840834, 0.9373429, 0.57875896, 2.0741458, 2.0821667)
@@ -979,7 +983,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7957373, 0, 1.1901643)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6353502, 0, 1.1901643)
 
 [node name="Bot_ItemSpawns" type="Node3D" parent="Table"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.252073)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2833739, -3.252073)
 
 [node name="B_Slot" type="Marker3D" parent="Table/Bot_ItemSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7503515, 0, 0)
@@ -1532,7 +1536,7 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 1.263576
+light_energy = 2.2048478
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1554,7 +1558,7 @@ transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.0397216
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 1.2985419
+light_energy = 4.149168
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1615,7 +1619,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0,
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch2/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 19.909325
+light_energy = 20.20154
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1635,7 +1639,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch3/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 19.88785
+light_energy = 20.097004
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1655,7 +1659,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch4/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.007513
+light_energy = 20.039816
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1675,7 +1679,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch5/fire4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.064371
+light_energy = 20.051302
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636

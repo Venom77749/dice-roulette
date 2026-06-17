@@ -89,6 +89,9 @@ var is_rmb_pressed: bool = false
 
 var scale_jolt: float = 0.0
 
+@export var shop_antidote_scene: PackedScene 
+@export var table_antidote_scene: PackedScene
+
 func _ready() -> void:
 	print("--- Игра началась! ---")
 	print("HP Игрока: ", player_hp, " | HP ИИ: ", ai_hp)
@@ -432,15 +435,23 @@ func generate_shop() -> void:
 	for slot in shop_slots:
 		for child in slot.get_children():
 			child.queue_free()
-		if randf() <= 0.70 and shop_magnet_scene:
-			var new_item = shop_magnet_scene.instantiate()
+			
+		var chance = randf()
+		var new_item: Node3D = null
+		
+		# 40% шанс на Магнит, 40% шанс на Противоядие, 20% шанс что слот пуст
+		if chance <= 0.40 and shop_magnet_scene:
+			new_item = shop_magnet_scene.instantiate()
+		elif chance > 0.40 and chance <= 0.80 and shop_antidote_scene:
+			new_item = shop_antidote_scene.instantiate()
+			
+		# Если предмет заспавнился, ставим его на полку и слушаем клик
+		if new_item:
 			slot.add_child(new_item)
 			new_item.position = Vector3.ZERO
-			
-			# ДОБАВЛЕНО: Слушаем клик по магниту в магазине
 			if new_item.has_signal("clicked"):
 				new_item.clicked.connect(_on_shop_item_clicked.bind(new_item))
-
+				
 func use_magnet(magnet_node: Node3D) -> void:
 	if ai_last_buff_effect == "":
 		print("У ИИ нет свежих баффов для кражи! Магнит не сработал.")
@@ -592,6 +603,24 @@ func play_money_ui_animation() -> void:
 	tween.tween_property(money_coin_node, "rotation_degrees:y", 360, 0.5)\
 		 .set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
+func use_antidote(bottle_node: Node3D) -> void:
+	if player_poison <= 0:
+		print("В крови нет яда! Ты выпиваешь горькую жижу впустую.")
+	else:
+		print("Игрок выпивает противоядие! Яд нейтрализован.")
+		player_poison = 0
+		
+		# В качестве бонуса, противоядие может слегка лечить
+		player_hp = min(player_hp + 1, max_hp) 
+		
+		# Спавним твои зеленые партиклы лечения над чашей игрока
+		spawn_particles(left_weight.global_position, "heal")
+	
+	update_ui()
+	
+	# Разбиваем/уничтожаем бутылку после использования
+	bottle_node.queue_free()
+
 func _on_shop_item_clicked(item_node: Node3D) -> void:
 	if not is_at_shop:
 		return 
@@ -603,32 +632,36 @@ func _on_shop_item_clicked(item_node: Node3D) -> void:
 			break
 			
 	if free_slot == null:
-		print("Нет места на столе! Освободите слоты.")
+		print("Нет места на столе!")
 		return
 		
 	var item_cost = 1
 	if Global.money >= item_cost:
 		Global.money -= item_cost
 		update_ui()
-		print("Магнит куплен!")
 		
-		# 1. Удаляем магнит с витрины магазина
-		item_node.queue_free()
+		# Узнаем, что именно мы кликнули
+		var id = item_node.get("item_id")
+		print("🛒 Куплен предмет: ", id)
 		
-		# 2. Создаем НАСТОЯЩИЙ магнит в слоте на столе
-		if table_magnet_scene:
-			var real_magnet = table_magnet_scene.instantiate()
-			free_slot.add_child(real_magnet)
+		item_node.queue_free() # Удаляем с витрины
+		
+		var real_item: Node3D = null
+		
+		# Создаем правильный настольный предмет
+		if id == "magnet" and table_magnet_scene:
+			real_item = table_magnet_scene.instantiate()
+			free_slot.add_child(real_item)
+			real_item.clicked.connect(use_magnet.bind(real_item))
+		elif id == "antidote" and table_antidote_scene:
+			real_item = table_antidote_scene.instantiate()
+			free_slot.add_child(real_item)
+			real_item.clicked.connect(use_antidote.bind(real_item))
 			
-			# Красивое падение на стол
-			real_magnet.position = Vector3(0, 2, 0)
+		# Анимация падения на стол для любого предмета
+		if real_item:
+			real_item.position = Vector3(0, 2, 0)
 			var tween = create_tween()
-			tween.tween_property(real_magnet, "position", Vector3.ZERO, 0.4).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
-			
-			# Подключаем клик по настоящему магниту к функции воровства
-			if real_magnet.has_signal("clicked"):
-				real_magnet.clicked.connect(use_magnet.bind(real_magnet))
-		else:
-			print("ОШИБКА: Ты забыл перетащить item_magnet.tscn в Инспектор!")
+			tween.tween_property(real_item, "position", Vector3.ZERO, 0.4).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 	else:
 		print("Не хватает денег!")
