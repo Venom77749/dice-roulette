@@ -12,6 +12,9 @@ var player_armor: int = 0
 var ai_armor: int = 0
 var player_poison: int = 0
 var ai_poison: int = 0
+# Память для магнита
+var ai_last_buff_effect: String = ""
+var ai_last_buff_value: int = 0
 
 # Поворот камеры
 var center_rot_y: float = 0.0
@@ -65,6 +68,13 @@ var is_rmb_pressed: bool = false
 	$shop/ItemSpawns/Slot_4
 ]
 
+@onready var player_slots = [
+	$Table/Player_ItemSpawns/P_Slot,
+	$Table/Player_ItemSpawns/P_Slot2,
+	$Table/Player_ItemSpawns/P_Slot3,
+	$Table/Player_ItemSpawns/P_Slot4
+]
+
 # --- НАСТРОЙКИ UI ДЕНЕГ И МЕШКА ---
 # Теперь мы назначаем их через Инспектор, чтобы ничего не терялось!
 @export var coin_3d_scene: PackedScene
@@ -75,6 +85,7 @@ var is_rmb_pressed: bool = false
 @onready var money_ui: Control = $CanvasLayer/MoneyUI
 @onready var money_label: Label = $CanvasLayer/MoneyUI/MoneyLabel
 @onready var money_coin_node: Node3D = $CanvasLayer/MoneyUI/SubViewportContainer/SubViewport/coin
+@export var table_magnet_scene: PackedScene
 
 var scale_jolt: float = 0.0
 
@@ -267,22 +278,16 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 	if effect == "neutral":
 		print(target_name, " вытянул пустышку.")
 	elif effect == "heal":
-		if is_player:
-			player_hp = min(player_hp + value, max_hp)
-		else:
-			ai_hp = min(ai_hp + value, max_hp)
+		if is_player: player_hp = min(player_hp + value, max_hp)
+		else: ai_hp = min(ai_hp + value, max_hp)
 		print(target_name, " лечится (выпало: +", value, ")")
 	elif effect == "armor":
-		if is_player:
-			player_armor += value
-		else:
-			ai_armor += value
+		if is_player: player_armor += value
+		else: ai_armor += value
 		print(target_name, " получает броню: +", value)
 	elif effect == "poison":
-		if is_player:
-			player_poison += value 
-		else:
-			ai_poison += value
+		if is_player: player_poison += value 
+		else: ai_poison += value
 		print(target_name, " отравлен! Уровень яда: ", value)
 	elif effect == "damage":
 		var actual_damage = value
@@ -291,17 +296,25 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 				var absorbed = min(player_armor, actual_damage)
 				player_armor -= absorbed
 				actual_damage -= absorbed
-				print("🛡️ Броня Игрока поглотила ", absorbed, " урона.")
 			player_hp -= actual_damage
 		else:
 			if ai_armor > 0:
 				var absorbed = min(ai_armor, actual_damage)
 				ai_armor -= absorbed
 				actual_damage -= absorbed
-				print("🛡️ Броня ИИ поглотила ", absorbed, " урона.")
 			ai_hp -= actual_damage
 			
-		print(target_name, " получает урон: -", actual_damage, " HP")
+	# --- НАШ НОВЫЙ КОД ДЛЯ ПАМЯТИ МАГНИТА ---
+	if not is_player:
+		# Если ИИ получил бафф, запоминаем его
+		if effect == "heal" or effect == "armor":
+			ai_last_buff_effect = effect
+			ai_last_buff_value = value
+		else:
+			# Если ИИ получил урон/яд, воровать нечего
+			ai_last_buff_effect = ""
+			ai_last_buff_value = 0
+	# ----------------------------------------
 		
 	update_ui()
 	check_win_condition()
@@ -317,6 +330,7 @@ func process_poison() -> void:
 		ai_hp -= ai_poison
 		ai_poison -= 1
 		
+	
 	update_ui()
 	check_win_condition()
 
@@ -422,6 +436,90 @@ func generate_shop() -> void:
 			var new_item = shop_magnet_scene.instantiate()
 			slot.add_child(new_item)
 			new_item.position = Vector3.ZERO
+			
+			# ДОБАВЛЕНО: Слушаем клик по магниту в магазине
+			if new_item.has_signal("clicked"):
+				new_item.clicked.connect(_on_shop_item_clicked.bind(new_item))
+
+func use_magnet(magnet_node: Node3D) -> void:
+	if ai_last_buff_effect == "":
+		print("У ИИ нет свежих баффов для кражи! Магнит не сработал.")
+		return
+		
+	var stolen_effect = ai_last_buff_effect
+	var stolen_value = ai_last_buff_value
+	
+	print("Игрок ВОРУЕТ у ИИ: ", stolen_effect, " на ", stolen_value)
+	
+	# 1. Отнимаем эффект у ИИ
+	if stolen_effect == "heal":
+		ai_hp -= stolen_value
+	elif stolen_effect == "armor":
+		ai_armor = max(0, ai_armor - stolen_value)
+		
+	# 2. Прибавляем этот же эффект Игроку
+	if stolen_effect == "heal":
+		player_hp = min(player_hp + stolen_value, max_hp)
+	elif stolen_effect == "armor":
+		player_armor += stolen_value
+		
+	# 3. Очищаем память
+	ai_last_buff_effect = ""
+	ai_last_buff_value = 0
+	
+	update_ui()
+	
+	# 4. Запускаем анимацию
+	steal_soul_animation(stolen_effect, stolen_value)
+	
+	# ДОБАВЛЕНО: Уничтожаем магнит со стола после использования
+	magnet_node.queue_free()
+
+
+func steal_soul_animation(effect: String, value: int) -> void:
+	var proj_scene: PackedScene = null
+	match effect:
+		"heal": proj_scene = soul_heal
+		"armor": proj_scene = soul_armor
+		
+	if not proj_scene: 
+		return
+	
+	# Создаем снаряд
+	var soul = proj_scene.instantiate()
+	
+	# Летим ОТ чаши ИИ К чаше Игрока
+	var start_pos = right_weight.global_position + Vector3(0, 0.5, 0)
+	var end_pos = left_weight.global_position
+	
+	soul.position = start_pos
+	soul.look_at_from_position(start_pos, end_pos, Vector3.UP)
+	add_child(soul)
+	
+	await get_tree().process_frame
+	
+	var tween = create_tween()
+	tween.tween_property(soul, "global_position", end_pos, 0.65).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	
+	await get_tree().create_timer(0.65).timeout
+	
+	# Взрыв на нашей чаше
+	if is_instance_valid(soul):
+		var emitters = soul.get_node_or_null("Emitters")
+		if emitters:
+			for child in emitters.get_children(): child.emitting = false
+				
+		var impact = soul.get_node_or_null("Impact")
+		if impact:
+			for child in impact.get_children():
+				if child.has_method("restart"): child.restart() 
+				child.emitting = true
+				
+		get_tree().create_timer(1.5).timeout.connect(soul.queue_free)
+	
+	# Рисуем цифру, которую мы украли, и дергаем НАШИ весы
+	spawn_floating_text(end_pos, effect, value)
+	scale_jolt = -15.0
 
 func _on_shop_button_pressed() -> void:
 	is_at_shop = true
@@ -493,3 +591,44 @@ func play_money_ui_animation() -> void:
 	money_coin_node.rotation_degrees.y = 0 # Сброс перед вращением, чтобы не перекрутилась
 	tween.tween_property(money_coin_node, "rotation_degrees:y", 360, 0.5)\
 		 .set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+func _on_shop_item_clicked(item_node: Node3D) -> void:
+	if not is_at_shop:
+		return 
+		
+	var free_slot: Node3D = null
+	for slot in player_slots:
+		if slot.get_child_count() == 0:
+			free_slot = slot
+			break
+			
+	if free_slot == null:
+		print("Нет места на столе! Освободите слоты.")
+		return
+		
+	var item_cost = 1
+	if Global.money >= item_cost:
+		Global.money -= item_cost
+		update_ui()
+		print("Магнит куплен!")
+		
+		# 1. Удаляем магнит с витрины магазина
+		item_node.queue_free()
+		
+		# 2. Создаем НАСТОЯЩИЙ магнит в слоте на столе
+		if table_magnet_scene:
+			var real_magnet = table_magnet_scene.instantiate()
+			free_slot.add_child(real_magnet)
+			
+			# Красивое падение на стол
+			real_magnet.position = Vector3(0, 2, 0)
+			var tween = create_tween()
+			tween.tween_property(real_magnet, "position", Vector3.ZERO, 0.4).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+			
+			# Подключаем клик по настоящему магниту к функции воровства
+			if real_magnet.has_signal("clicked"):
+				real_magnet.clicked.connect(use_magnet.bind(real_magnet))
+		else:
+			print("ОШИБКА: Ты забыл перетащить item_magnet.tscn в Инспектор!")
+	else:
+		print("Не хватает денег!")
