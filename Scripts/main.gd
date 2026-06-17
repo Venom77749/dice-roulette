@@ -92,6 +92,11 @@ var scale_jolt: float = 0.0
 @export var shop_antidote_scene: PackedScene 
 @export var table_antidote_scene: PackedScene
 
+@export var shop_hammer_scene: PackedScene 
+@export var table_hammer_scene: PackedScene
+
+var is_waiting_for_hammer_target: bool = false # Ждём ли мы выбора кубика для молотка
+
 func _ready() -> void:
 	print("--- Игра началась! ---")
 	print("HP Игрока: ", player_hp, " | HP ИИ: ", ai_hp)
@@ -165,6 +170,25 @@ func _on_button_pressed() -> void:
 		
 func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
 	if not is_player_turn:
+		return
+	
+	# --- ДОБАВЛЕНО ДЛЯ МОЛОТКА ---
+	if is_waiting_for_hammer_target:
+		# Режим молотка! Мы просто уничтожаем этот кубик.
+		print("Кубик уничтожен молотком! (Эффект: ", effect, ", Значение: ", value, ")")
+		
+		is_waiting_for_hammer_target = false # Выключаем режим молотка
+		
+		# Выключаем специальную подсветку у остальных кубиков
+		for die in get_tree().get_nodes_in_group("dice"):
+			if die.has_method("set_hammer_highlight"):
+				die.set_hammer_highlight(false)
+				
+		dice_node.remove_from_group("dice")
+		dice_node.queue_free()
+		
+		# Важный момент: ход игрока НЕ заканчивается! Он должен выбрать другой кубик для хода.
+		print("Выберите кубик для своего хода.")
 		return
 		
 	is_player_turn = false
@@ -439,11 +463,13 @@ func generate_shop() -> void:
 		var chance = randf()
 		var new_item: Node3D = null
 		
-		# 40% шанс на Магнит, 40% шанс на Противоядие, 20% шанс что слот пуст
-		if chance <= 0.40 and shop_magnet_scene:
+		# 30% шанс на Магнит, 30% на Противоядие, 30% на Молоток, 10% пусто
+		if chance <= 0.30 and shop_magnet_scene:
 			new_item = shop_magnet_scene.instantiate()
-		elif chance > 0.40 and chance <= 0.80 and shop_antidote_scene:
+		elif chance > 0.30 and chance <= 0.60 and shop_antidote_scene:
 			new_item = shop_antidote_scene.instantiate()
+		elif chance > 0.60 and chance <= 0.90 and shop_hammer_scene:
+			new_item = shop_hammer_scene.instantiate()
 			
 		# Если предмет заспавнился, ставим его на полку и слушаем клик
 		if new_item:
@@ -621,6 +647,33 @@ func use_antidote(bottle_node: Node3D) -> void:
 	# Разбиваем/уничтожаем бутылку после использования
 	bottle_node.queue_free()
 
+func use_hammer(hammer_node: Node3D) -> void:
+	# Проверяем, на чьем мы ходу (нельзя ломать кубики на ходу ИИ)
+	if not is_player_turn:
+		print("Сейчас ход ИИ! Молоток не работает.")
+		return
+		
+	# Проверяем, есть ли вообще кубики на столе
+	if get_tree().get_nodes_in_group("dice").size() == 0:
+		print("На столе нет кубиков, чтобы их ломать!")
+		hammer_node.queue_free() # Возвращаем молоток в инвентарь или ломаем его? Давай уничтожим для баланса
+		return
+
+	print("МОЛОТОК АКТИВЕН! Выберите кубик на столе для уничтожения.")
+	
+	# Включаем режим ожидания цели
+	is_waiting_for_hammer_target = true
+	
+	# --- ЧАСТЬ ПРО ПОДСВЕТКУ ДРУГИМ ЦВЕТОМ ---
+	# Нам нужно как-то сказать всем кубикам, чтобы они подсветились по-другому.
+	# Давай добавим их в специальную группу или вызовем у них метод.
+	for die in get_tree().get_nodes_in_group("dice"):
+		if die.has_method("set_hammer_highlight"):
+			die.set_hammer_highlight(true)
+			
+	# Уничтожаем молоток со стола
+	hammer_node.queue_free()
+
 func _on_shop_item_clicked(item_node: Node3D) -> void:
 	if not is_at_shop:
 		return 
@@ -657,6 +710,10 @@ func _on_shop_item_clicked(item_node: Node3D) -> void:
 			real_item = table_antidote_scene.instantiate()
 			free_slot.add_child(real_item)
 			real_item.clicked.connect(use_antidote.bind(real_item))
+		elif id == "hammer" and table_hammer_scene:
+			real_item = table_hammer_scene.instantiate()
+			free_slot.add_child(real_item)
+			real_item.clicked.connect(use_hammer.bind(real_item)) # Подключаем функцию применения
 			
 		# Анимация падения на стол для любого предмета
 		if real_item:

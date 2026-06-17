@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://cdmat3nbail27"]
+
+[ext_resource type="PackedScene" uid="uid://bkjujihq0aqcr" path="res://Models_item/metal_hammer/scene.gltf" id="1_6xg40"]
+[ext_resource type="Script" uid="uid://bc1vxogrxa3d8" path="res://Scenes/shop_item_hammer.gd" id="1_m0hta"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_m0hta"]
+size = Vector3(0.70739746, 0.4159546, 1.6188965)
+
+[node name="ShopItemHammer" type="Area3D"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
+script = ExtResource("1_m0hta")
+item_id = "hammer"
+
+[node name="hammer" parent="." instance=ExtResource("1_6xg40")]
+transform = Transform3D(0.4, 0, 0, 0, -1.7484556e-08, 0.4, 0, -0.4, -1.7484556e-08, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.0018005371, -0.0005340576, 0.0012817383)
+shape = SubResource("BoxShape3D_m0hta")
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]
