@@ -16,6 +16,13 @@ var ai_poison: int = 0
 var ai_last_buff_effect: String = ""
 var ai_last_buff_value: int = 0
 var ai_actual_gained_hp: int = 0
+# Память для магнита со стороны игрока (чтобы ИИ мог вспомнить и украсть)
+var player_last_buff_effect: String = ""
+var player_last_buff_value: int = 0
+var player_actual_gained_hp: int = 0
+
+# Сюда Глаз ИИ будет записывать выбранный лучший кубик
+var ai_forced_target_die: RigidBody3D = null
 
 # Поворот камеры
 var center_rot_y: float = 0.0
@@ -89,6 +96,13 @@ var is_rmb_pressed: bool = false
 	$Table/Player_ItemSpawns/P_Slot2,
 	$Table/Player_ItemSpawns/P_Slot3,
 	$Table/Player_ItemSpawns/P_Slot4
+]
+
+@onready var ai_slots = [
+	$Table/Bot_ItemSpawns/B_Slot,
+	$Table/Bot_ItemSpawns/B_Slot2,
+	$Table/Bot_ItemSpawns/B_Slot3,
+	$Table/Bot_ItemSpawns/B_Slot4
 ]
 
 @onready var tooltip: PanelContainer = $CanvasLayer/ItemTooltip
@@ -286,11 +300,133 @@ func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
 	else:
 		end_round()
 
+# --- ЛОГИКА ИСПОЛЬЗОВАНИЯ ПРЕДМЕТОВ ИИ ---
+func ai_use_items() -> bool:
+	var used_item = false
+	
+	for slot in ai_slots:
+		if slot.get_child_count() > 0:
+			var item = slot.get_child(0)
+			var item_id = ""
+			if "item_id" in item:
+				item_id = item.get("item_id")
+			else:
+				continue
+			
+			# --- 1. ПРОТИВОЯДИЕ ---
+			if item_id == "antidote" and ai_poison > 0:
+				print("AI decides to use Antidote!")
+				ai_poison = 0
+				ai_hp = min(ai_hp + 1, max_hp)
+				spawn_particles(right_weight.global_position, "heal")
+				update_ui()
+				play_item_selection_animation(item)
+				used_item = true
+				break
+				
+			# --- 2. МАГНИТ (Кража баффа игрока с проверкой силы эффекта) ---
+			elif item_id == "magnet" and player_last_buff_effect != "":
+				# ИИ активирует магнит, только если у игрока есть что украсть (значение эффекта >= 3)
+				if player_last_buff_value >= 3:
+					print("AI uses Magnet! Stealing ", player_last_buff_effect, " (Value: ", player_last_buff_value, ")")
+					
+					var stolen_effect = player_last_buff_effect
+					var stolen_value = player_last_buff_value
+					var player_loss = player_actual_gained_hp
+					
+					# Отбираем у игрока то, что он получил на прошлом ходу
+					if stolen_effect == "heal":
+						player_hp -= player_loss
+					elif stolen_effect == "armor":
+						player_armor = max(0, player_armor - player_loss)
+						
+					# Отдаем ИИ
+					if stolen_effect == "heal":
+						ai_hp = min(ai_hp + stolen_value, max_hp)
+					elif stolen_effect == "armor":
+						ai_armor += stolen_value
+						
+					# Стираем память, предмет использован
+					player_last_buff_effect = ""
+					player_last_buff_value = 0
+					player_actual_gained_hp = 0
+					
+					update_ui()
+					
+					# Спавним летящую от игрока к ИИ душу
+					var proj_scene = soul_heal if stolen_effect == "heal" else soul_armor
+					if proj_scene:
+						var soul = proj_scene.instantiate()
+						soul.position = left_weight.global_position + Vector3(0, 0.5, 0)
+						add_child(soul)
+						var tween = create_tween()
+						tween.tween_property(soul, "global_position", right_weight.global_position, 0.65)\
+							.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+						tween.finished.connect(func(): soul.queue_free())
+					
+					play_item_selection_animation(item)
+					used_item = true
+					break
+			
+			# --- 3. МОЛОТК (Уничтожение самой опасной кости) ---
+			elif item_id == "hammer":
+				var dice_left = get_tree().get_nodes_in_group("dice")
+				var dangerous_dice = []
+				
+				for die in dice_left:
+					if die.hidden_effect == "damage" or die.hidden_effect == "poison":
+						dangerous_dice.append(die)
+						
+				if dangerous_dice.size() > 0:
+					var target_die = dangerous_dice[0]
+					for die in dangerous_dice:
+						# Ищем кубик с самым большим числом на верхней грани
+						if die.get_top_number() > target_die.get_top_number():
+							target_die = die
+							
+					print("AI uses Hammer on a dangerous die with value: ", target_die.get_top_number())
+					target_die.remove_from_group("dice")
+					play_item_selection_animation(target_die)
+					play_item_selection_animation(item)
+					used_item = true
+					break
+					
+			# --- 4. ГЛАЗ ИСТИНЫ (Поиск кубика с самым большим лечением/броней) ---
+			elif item_id == "eye" and not is_instance_valid(ai_forced_target_die):
+				var dice_left = get_tree().get_nodes_in_group("dice")
+				var best_die: RigidBody3D = null
+				var max_value = 0
+				
+				for die in dice_left:
+					if die.hidden_effect == "heal" or die.hidden_effect == "armor":
+						var current_value = die.get_top_number()
+						# Проверка самого большого числа среди полезных кубиков
+						if current_value > max_value:
+							max_value = current_value
+							best_die = die
+							
+				# ИИ активирует Глаз, только если на столе гарантированно лежит жирный бафф (например, 4, 5 или 6)
+				if best_die and max_value >= 4:
+					print("AI uses Eye of Truth! Target locked on die with value: ", max_value)
+					ai_forced_target_die = best_die # Запоминаем этот кубик на этот ход
+					play_item_selection_animation(item)
+					used_item = true
+					break
+					
+	return used_item
+
 func ai_turn() -> void:
 	var dice_left = get_tree().get_nodes_in_group("dice")
 	if dice_left.size() == 0:
 		end_round()
 		return
+		
+	# --- НОВОЕ: ИИ проверяет инвентарь перед броском ---
+	var item_used = ai_use_items()
+	if item_used:
+		# Если ИИ выпил зелье, даем небольшую паузу, чтобы игрок это увидел
+		await get_tree().create_timer(1.2).timeout
+	# ---------------------------------------------------
 		
 	var think_time = randf_range(1.0, 2.0)
 	await get_tree().create_timer(think_time).timeout
@@ -426,11 +562,22 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 		if effect == "heal" or effect == "armor":
 			ai_last_buff_effect = effect
 			ai_last_buff_value = value
-			ai_actual_gained_hp = actual_gained # Запоминаем реальный профит ИИ
+			ai_actual_gained_hp = actual_gained 
 		else:
 			ai_last_buff_effect = ""
 			ai_last_buff_value = 0
 			ai_actual_gained_hp = 0
+	else:
+		# ПАМЯТЬ ДЛЯ ИИ: Скелет запоминает, чем только что поживился игрок
+		if effect == "heal" or effect == "armor":
+			var hp_before = player_hp
+			player_last_buff_effect = effect
+			player_last_buff_value = value
+			player_actual_gained_hp = (player_hp - hp_before) if effect == "heal" else value
+		else:
+			player_last_buff_effect = ""
+			player_last_buff_value = 0
+			player_actual_gained_hp = 0
 	# ----------------------------------------
 		
 	update_ui()
@@ -594,6 +741,14 @@ func end_round() -> void:
 	
 	drop_coins_into_ui_bag()
 	play_money_ui_animation()
+	
+	# === АВТОМАТИЧЕСКАЯ ВЫДАЧА ПРЕДМЕТОВ ДЛЯ ИИ ===
+	# Сделай, например, шанс 60%, что ИИ получит предмет в конце раунда
+	if randf() <= 0.60:
+		var item_pool = ["antidote", "hammer"] # Список предметов, которые ИИ умеет юзать
+		var random_id = item_pool[randi() % item_pool.size()]
+		give_ai_item(random_id)
+	# =============================================
 	
 	if camera:
 		var tween = create_tween()
@@ -897,6 +1052,36 @@ func use_eye(eye_node: Node3D) -> void:
 		
 	# Запускаем красивую анимацию исчезновения
 	play_item_selection_animation(eye_node)
+
+func give_ai_item(id: String) -> void:
+	var free_slot: Node3D = null
+	for slot in ai_slots:
+		if slot.get_child_count() == 0:
+			free_slot = slot
+			break
+			
+	if free_slot == null:
+		print("AI inventory is full!")
+		return
+		
+	var real_item: Node3D = null
+	
+	if id == "antidote" and table_antidote_scene:
+		real_item = table_antidote_scene.instantiate()
+	elif id == "hammer" and table_hammer_scene:
+		real_item = table_hammer_scene.instantiate()
+	# Сюда можно добавить магнит и глаз
+		
+	if real_item:
+		free_slot.add_child(real_item)
+		real_item.set("item_id", id) # Записываем id в сам объект, чтобы ИИ знал, что это
+		
+		# Анимация падения на стол
+		real_item.position = Vector3(0, 2, 0)
+		var tween = create_tween()
+		tween.tween_property(real_item, "position", Vector3.ZERO, 0.4).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+		
+		print("AI received item: ", id)
 
 func _on_shop_item_clicked(item_node: Node3D) -> void:
 	var free_slot: Node3D = null

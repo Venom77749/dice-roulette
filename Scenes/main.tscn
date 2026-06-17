@@ -1205,33 +1205,34 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_ptfg5")
 
 [node name="Title" type="Label" parent="CanvasLayer/GameOverPanel" unique_id=1816774299]
 layout_mode = 0
-offset_left = 5.0
-offset_right = 586.0
-offset_bottom = 41.0
+offset_left = 6.0
+offset_top = 36.0
+offset_right = 587.0
+offset_bottom = 77.0
 theme_override_font_sizes/font_size = 30
 horizontal_alignment = 1
 
 [node name="BuffText" type="Label" parent="CanvasLayer/GameOverPanel" unique_id=1731217423]
 layout_mode = 0
-offset_left = 15.0
-offset_top = 49.0
-offset_right = 178.0
-offset_bottom = 108.0
+offset_left = 26.0
+offset_top = 76.0
+offset_right = 189.0
+offset_bottom = 128.0
 
 [node name="RestartButton" type="Button" parent="CanvasLayer/GameOverPanel" unique_id=1286894736]
 layout_mode = 0
-offset_left = 35.0
-offset_top = 156.0
-offset_right = 197.0
-offset_bottom = 200.0
+offset_left = 42.0
+offset_top = 135.0
+offset_right = 204.0
+offset_bottom = 179.0
 text = "Рестарт"
 
 [node name="StatsText" type="Label" parent="CanvasLayer/GameOverPanel" unique_id=774142507]
 layout_mode = 0
 offset_left = 288.0
-offset_top = 72.0
+offset_top = 81.0
 offset_right = 576.0
-offset_bottom = 185.0
+offset_bottom = 194.0
 
 [node name="весы" type="Node3D" parent="." unique_id=1675986562]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.83611196, 1.1422081, -1.8248546)
@@ -1600,7 +1601,7 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3" unique_id=1860756356]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 0.6684332
+light_energy = 0.51448363
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1622,7 +1623,7 @@ transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.0397216
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2" unique_id=1096417647]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 3.4868503
+light_energy = 4.4013824
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1683,7 +1684,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0,
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch2/fire4" unique_id=210631740]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.02251
+light_energy = 20.016289
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1703,7 +1704,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch3/fire4" unique_id=1537209033]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.056568
+light_energy = 19.993597
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1723,7 +1724,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch4/fire4" unique_id=421845080]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.095997
+light_energy = 20.019224
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1743,7 +1744,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch5/fire4" unique_id=620797616]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.180365
+light_energy = 20.126673
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
