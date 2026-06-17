@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://c0m2wd8kwdvo7"]
+[gd_scene format=4 uid="uid://c0m2wd8kwdvo7"]
 
 [ext_resource type="Script" uid="uid://c0drnnve05uti" path="res://Scenes/shop_item_eye.gd" id="1_taroh"]
 [ext_resource type="Texture2D" uid="uid://cpn0axhcwhqij" path="res://Models_item/eye/textures/ML1010_A_MATb_MI_baseColor.jpeg" id="2_jqvqx"]

@@ -34,6 +34,20 @@ enum DiceType { GOOD, BAD }
 @onready var shop_button: Button = $CanvasLayer/ShopButton
 @onready var back_button: Button = $CanvasLayer/BackButton
 
+# --- ЭКРАН КОНЦА ИГРЫ ---
+@export var game_over_camera_target: Marker3D 
+@onready var game_over_panel: Panel = $CanvasLayer/GameOverPanel
+@onready var game_over_title: Label = $CanvasLayer/GameOverPanel/Title
+@onready var game_over_buff: Label = $CanvasLayer/GameOverPanel/BuffText
+@onready var restart_button: Button = $CanvasLayer/GameOverPanel/RestartButton
+@onready var game_over_stats: Label = $CanvasLayer/GameOverPanel/StatsText
+
+# --- СТАТИСТИКА МАТЧА ---
+var stat_dice_spawned: int = 0
+var stat_items_bought: int = 0
+var stat_dmg_taken: int = 0
+var stat_hp_healed: int = 0
+
 # --- ОБЪЕКТЫ НА СЦЕНЕ ---
 @onready var scale_arm: Node3D = $весы/Рука
 @onready var left_weight: Node3D = $весы/Рука/LeftWeight
@@ -81,10 +95,10 @@ var is_rmb_pressed: bool = false
 @onready var tooltip_label: Label = $CanvasLayer/ItemTooltip/Label
 
 var item_database = {
-	"magnet": {"name": "Магнит", "desc": "Притягивает последний эффект протифника на ваш выбор.", "price": 1},
-	"antidote": {"name": "Противоядие", "desc": "Очищает кровь от яда.", "price": 1},
-	"hammer": {"name": "Молоток", "desc": "Уничтожает любой кубик.", "price": 1},
-	"eye": {"name": "Глаз Истины", "desc": "Раскрывает эффект кубика.", "price": 2}
+	"magnet": {"name": "Магнит", "desc": "Притягивает последний положительный эффект противника.", "price": 4},
+	"antidote": {"name": "Противоядие", "desc": "Очищает кровь от яда.", "price": 5},
+	"hammer": {"name": "Молоток", "desc": "Уничтожает любой кубик.", "price": 2},
+	"eye": {"name": "Глаз Истины", "desc": "Раскрывает эффект кубика.", "price": 7}
 }
 
 # --- НАСТРОЙКИ UI ДЕНЕГ И МЕШКА ---
@@ -114,8 +128,22 @@ var is_waiting_for_hammer_target: bool = false # Ждём ли мы выбора
 var is_waiting_for_eye_target: bool = false
 
 func _ready() -> void:
-	print("--- Игра началась! ---")
-	print("HP Игрока: ", player_hp, " | HP ИИ: ", ai_hp)
+	# Инициализация метапрогрессии
+	if "max_hp_buff" in Global:
+		max_hp += Global.max_hp_buff
+	else:
+		Global.set("max_hp_buff", 0)
+		
+	player_hp = max_hp
+	ai_hp = max_hp
+	
+	print("--- Game Started! ---")
+	print("Player HP: ", player_hp, " | AI HP: ", ai_hp)
+	
+	# Прячем экран конца игры и вешаем рестарт сцены на кнопку
+	if game_over_panel:
+		game_over_panel.hide()
+		restart_button.pressed.connect(func(): get_tree().reload_current_scene())
 	
 	if camera:
 		default_pos = camera.global_position
@@ -136,11 +164,11 @@ func _ready() -> void:
 	if back_button:
 		back_button.hide()
 		back_button.pressed.connect(_on_back_button_pressed)
-	
+
 func _on_button_pressed() -> void:
 	is_at_shop = false
 	if get_tree().get_nodes_in_group("dice").size() > 0:
-		print("Сначала разберите оставшиеся кубики!")
+		print("Clear remaining dice first!")
 		return
 		
 	if ui_bag and ui_bag.scale != Vector3.ZERO:
@@ -148,13 +176,14 @@ func _on_button_pressed() -> void:
 		hide_tween.tween_property(ui_bag, "scale", Vector3.ZERO, 0.3)\
 			.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_BACK)
 		
-	# Прячем счетчик в начале раунда
 	if money_ui and money_ui.modulate.a > 0.0:
 		var hide_ui_tween = create_tween()
 		hide_ui_tween.tween_property(money_ui, "modulate:a", 0.0, 0.3)
 			
 	roll_button.disabled = true
-	is_player_turn = true
+	
+	# Смена первого хода (Раунд 1 - Игрок, Раунд 2 - ИИ и т.д.)
+	is_player_turn = (current_round % 2 != 0)
 		
 	if camera and camera_target:
 		center_rot_y = camera_target.global_rotation.y 
@@ -162,15 +191,13 @@ func _on_button_pressed() -> void:
 		tween.tween_property(camera, "global_transform", camera_target.global_transform, 1.0)\
 			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 		
-	print("\n=== РАУНД ", current_round, " ===")
-	
-	process_poison()
-	if player_hp <= 0 or ai_hp <= 0:
-		return 
+	print("\n=== ROUND ", current_round, " ===")
 	
 	var dice_count = current_round + randi_range(1, 2)
 	print("На стол падает кубиков: ", dice_count)
 	
+	stat_dice_spawned += dice_count
+		
 	for i in range(dice_count):
 		var new_dice = dice_scene.instantiate()
 		add_child(new_dice)
@@ -187,7 +214,12 @@ func _on_button_pressed() -> void:
 		var torque = Vector3(randf_range(-8, 8), randf_range(-8, 8), randf_range(-8, 8))
 		new_dice.apply_central_impulse(impulse)
 		new_dice.apply_torque_impulse(torque)
-		
+
+	# Если первый ход за ИИ, ждем пока кубики упадут и передаем ему управление
+	if not is_player_turn:
+		await get_tree().create_timer(1.5).timeout
+		ai_turn()
+
 func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
 	if not is_player_turn:
 		return
@@ -354,11 +386,13 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 		print(target_name, " вытянул пустышку.")
 	elif effect == "heal":
 		if is_player: 
+			var hp_before = player_hp
 			player_hp = min(player_hp + value, max_hp)
+			stat_hp_healed += (player_hp - hp_before)
 		else: 
 			var hp_before = ai_hp
 			ai_hp = min(ai_hp + value, max_hp)
-			actual_gained = ai_hp - hp_before # Запоминаем разницу до и после хила!
+			actual_gained = ai_hp - hp_before # Запоминаем разницу до и после хила
 		print(target_name, " лечится (выпало: +", value, ")")
 	elif effect == "armor":
 		if is_player: player_armor += value
@@ -373,11 +407,13 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 	elif effect == "damage":
 		var actual_damage = value
 		if is_player:
+			var hp_before = player_hp
 			if player_armor > 0:
 				var absorbed = min(player_armor, actual_damage)
 				player_armor -= absorbed
 				actual_damage -= absorbed
 			player_hp -= actual_damage
+			stat_dmg_taken += (hp_before - player_hp)
 		else:
 			if ai_armor > 0:
 				var absorbed = min(ai_armor, actual_damage)
@@ -402,8 +438,10 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 
 func process_poison() -> void:
 	if player_poison > 0:
+		var hp_before = player_hp
 		print("\nЯд действует на Игрока: -", player_poison, " HP")
 		player_hp -= player_poison 
+		stat_dmg_taken += (hp_before - player_hp)
 		player_poison -= 1
 		
 	if ai_poison > 0:
@@ -494,14 +532,62 @@ func play_item_selection_animation(item_node: Node3D) -> void:
 	)
 
 func check_win_condition() -> void:
-	if player_hp <= 0:
-		print("\nПобедил ИИ!")
-	elif ai_hp <= 0:
-		print("\nПобеда Игрока!")
+	if player_hp <= 0 or ai_hp <= 0:
+		trigger_game_over(player_hp > 0)
+
+func trigger_game_over(player_won: bool) -> void:
+	print("\n--- GAME OVER ---")
+	
+	# Прячем базовый интерфейс
+	roll_button.hide()
+	shop_button.hide()
+	if back_button: back_button.hide()
+	if tooltip: tooltip.hide()
+	
+	# Красивый пролет камеры сбоку
+	if camera and game_over_camera_target:
+		var tween = create_tween()
+		tween.tween_property(camera, "global_transform", game_over_camera_target.global_transform, 1.5)\
+			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+	
+	# Показываем панель конца игры
+	if game_over_panel:
+		game_over_panel.show()
+		
+		# --- ФОРМИРУЕМ ТЕКСТ СТАТИСТИКИ ---
+		if game_over_stats:
+			game_over_stats.text = "Статистика забега:\n" + \
+				"Кубиков брошено: " + str(stat_dice_spawned) + "\n" + \
+				"Куплено предметов: " + str(stat_items_bought) + "\n" + \
+				"Получено урона: " + str(stat_dmg_taken) + "\n" + \
+				"Восстановлено здоровья: " + str(stat_hp_healed)
+			game_over_stats.show()
+			
+		if player_won:
+			print("Player Wins!")
+			game_over_title.text = "ПОБЕДА!"
+			game_over_title.modulate = Color.GREEN
+			
+			Global.max_hp_buff += 1
+			game_over_buff.text = "Получен бафф:\n+1 к Макс. Здоровью навсегда!"
+			game_over_buff.modulate = Color.GOLD
+			game_over_buff.show()
+		else:
+			print("AI Wins!")
+			game_over_title.text = "ВЫ ПРОИГРАЛИ..."
+			game_over_title.modulate = Color.RED
+			game_over_buff.hide()
 
 func end_round() -> void:
+	# Вызываем урон от яда строго в конце раунда
+	process_poison()
+	
+	# Если кто-то умер от яда, раунд не переключается
+	if player_hp <= 0 or ai_hp <= 0:
+		return 
+	
 	current_round += 1
-	print("--- Раунд окончен! Нажмите 'Бросок' ---")
+	print("--- Round Over! Press 'Roll' ---")
 	
 	roll_button.disabled = false 
 	shop_button.show()
@@ -832,6 +918,7 @@ func _on_shop_item_clicked(item_node: Node3D) -> void:
 		
 		if Global.money >= item_cost:
 			Global.money -= item_cost
+			stat_items_bought += 1
 			update_ui()
 			print("🛒 Куплен предмет: ", id)
 			
