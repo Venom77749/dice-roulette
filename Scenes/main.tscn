@@ -32,6 +32,7 @@
 [ext_resource type="PackedScene" uid="uid://c0m2wd8kwdvo7" path="res://Scenes/item_eye.tscn" id="18_nwwfm"]
 [ext_resource type="Texture2D" uid="uid://dy5m80uxa2rec" path="res://Models/Skeleton/Variant2/base.png" id="19_ueoa1"]
 [ext_resource type="PackedScene" uid="uid://cuwku0n7dum8p" path="res://Models/Fantasy Props/Exports/glTF/Stall_Cart_Empty.gltf" id="20_ee4r6"]
+[ext_resource type="Texture2D" uid="uid://b23nhb4dgjon0" path="res://Models/buttonBG.png" id="20_s8vy0"]
 [ext_resource type="PackedScene" uid="uid://cjwcky1wp2oc2" path="res://Models/Fantasy Props/Exports/glTF/Pouch_Large.gltf" id="21_gt3je"]
 [ext_resource type="PackedScene" uid="uid://dgve6gk85dvg6" path="res://Models/Fantasy Props/Exports/glTF/Crate_Wooden.gltf" id="22_3pmx8"]
 [ext_resource type="PackedScene" uid="uid://bqbig4iuo8vop" path="res://Models/Fantasy Props/Exports/glTF/Barrel.gltf" id="22_u50mg"]
@@ -50,15 +51,45 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_1bvp3"]
 size = Vector3(3.6172943, 0.5, 5.965996)
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s8vy0"]
+texture = ExtResource("20_s8vy0")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jut3y"]
+texture = ExtResource("20_s8vy0")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v2nl5"]
+texture = ExtResource("20_s8vy0")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2yge"]
 bg_color = Color(2.6471912e-06, 0.63661957, 0.2811313, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bvp3"]
 bg_color = Color(1, 0, 0, 1)
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dmskm"]
+texture = ExtResource("20_s8vy0")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xdkp6"]
+texture = ExtResource("20_s8vy0")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_54nrm"]
+texture = ExtResource("20_s8vy0")
+
 [sub_resource type="LabelSettings" id="LabelSettings_536cc"]
 font_size = 64
 font_color = Color(1, 0.75686276, 0.13725491, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_55jeb"]
+texture = ExtResource("20_s8vy0")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gsvbx"]
+texture = ExtResource("20_s8vy0")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bv80c"]
+texture = ExtResource("20_s8vy0")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ptfg5"]
+texture = ExtResource("20_s8vy0")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_28yie"]
 resource_name = "tripo_node_c4ab6a98-4e57-4e43-a42f-4ab8daab790e_material"
@@ -939,7 +970,7 @@ shop_eye_scene = ExtResource("45_kqrg6")
 table_eye_scene = ExtResource("18_nwwfm")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=153139284]
-transform = Transform3D(1, 0, 0, 0, 0.9472998, 0.32034853, 0, -0.3203485, 0.94729984, 0.4237659, 2.074, 1.4868069)
+transform = Transform3D(1, 0, 0, 0, 0.9472998, 0.32034853, 0, -0.3203485, 0.94729984, 0.4237659, 2.074, 1.6937141)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=704496467]
 transform = Transform3D(0.99813473, 0.05687839, -0.022175955, 0, 0.36325118, 0.9316912, 0.061048537, -0.92995346, 0.36257365, -2.7326138, 36.074123, -0.26683378)
@@ -1002,6 +1033,11 @@ offset_right = -28.0
 offset_bottom = -28.0
 grow_horizontal = 0
 grow_vertical = 0
+theme_override_colors/font_color = Color(0.6366015, 0.5220709, 0.19531164, 1)
+theme_override_font_sizes/font_size = 33
+theme_override_styles/normal = SubResource("StyleBoxTexture_s8vy0")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_jut3y")
+theme_override_styles/hover = SubResource("StyleBoxTexture_v2nl5")
 text = "Бросок"
 
 [node name="PlayerHealthBar" type="ProgressBar" parent="CanvasLayer" unique_id=277577765]
@@ -1070,6 +1106,11 @@ offset_top = -97.0
 offset_right = 261.0
 offset_bottom = -28.0
 grow_vertical = 0
+theme_override_colors/font_color = Color(0.63529414, 0.52156866, 0.19607843, 1)
+theme_override_font_sizes/font_size = 33
+theme_override_styles/normal = SubResource("StyleBoxTexture_dmskm")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_xdkp6")
+theme_override_styles/hover = SubResource("StyleBoxTexture_54nrm")
 text = "Магазин"
 
 [node name="BagUI" parent="CanvasLayer" unique_id=75430111 instance=ExtResource("14_k2e45")]
@@ -1147,6 +1188,11 @@ offset_top = -97.0
 offset_right = 261.0
 offset_bottom = -27.0
 grow_vertical = 0
+theme_override_colors/font_color = Color(0.63529414, 0.52156866, 0.19607843, 1)
+theme_override_font_sizes/font_size = 33
+theme_override_styles/normal = SubResource("StyleBoxTexture_55jeb")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_gsvbx")
+theme_override_styles/hover = SubResource("StyleBoxTexture_bv80c")
 text = "Назад"
 
 [node name="GameOverPanel" type="Panel" parent="CanvasLayer" unique_id=230437592]
@@ -1154,35 +1200,38 @@ light_mask = 0
 offset_left = 292.0
 offset_top = 58.0
 offset_right = 881.0
-offset_bottom = 251.0
+offset_bottom = 296.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_ptfg5")
 
 [node name="Title" type="Label" parent="CanvasLayer/GameOverPanel" unique_id=1816774299]
 layout_mode = 0
-offset_left = 265.0
-offset_right = 305.0
-offset_bottom = 18.0
+offset_left = 5.0
+offset_right = 586.0
+offset_bottom = 41.0
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
 
 [node name="BuffText" type="Label" parent="CanvasLayer/GameOverPanel" unique_id=1731217423]
 layout_mode = 0
-offset_left = 11.0
-offset_top = 40.0
-offset_right = 51.0
-offset_bottom = 58.0
+offset_left = 15.0
+offset_top = 49.0
+offset_right = 178.0
+offset_bottom = 108.0
 
 [node name="RestartButton" type="Button" parent="CanvasLayer/GameOverPanel" unique_id=1286894736]
 layout_mode = 0
-offset_left = 205.0
-offset_top = 122.0
-offset_right = 384.0
-offset_bottom = 167.0
+offset_left = 35.0
+offset_top = 156.0
+offset_right = 197.0
+offset_bottom = 200.0
 text = "Рестарт"
 
 [node name="StatsText" type="Label" parent="CanvasLayer/GameOverPanel" unique_id=774142507]
 layout_mode = 0
-offset_left = 420.0
-offset_top = 58.0
-offset_right = 582.0
-offset_bottom = 127.0
+offset_left = 288.0
+offset_top = 72.0
+offset_right = 576.0
+offset_bottom = 185.0
 
 [node name="весы" type="Node3D" parent="." unique_id=1675986562]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.83611196, 1.1422081, -1.8248546)
@@ -1551,7 +1600,7 @@ transform = Transform3D(0.21000002, 0, -1.4901161e-08, 0, 0.21000011, 0, 1.49011
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_big/fire3" unique_id=1860756356]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 3.8354695
+light_energy = 0.6684332
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1573,7 +1622,7 @@ transform = Transform3D(0.16186406, 0, 0.039721683, 0, 0.16666669, 0, -0.0397216
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/Candle_small/fire2" unique_id=1096417647]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.35615945, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 6.454505
+light_energy = 3.4868503
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 15.0
@@ -1634,7 +1683,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0,
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch2/fire4" unique_id=210631740]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 19.979677
+light_energy = 20.02251
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1654,7 +1703,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch3/fire4" unique_id=1537209033]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 19.862598
+light_energy = 20.056568
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1674,7 +1723,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch4/fire4" unique_id=421845080]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 20.164234
+light_energy = 20.095997
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1694,7 +1743,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0
 [node name="OmniLight3D" type="OmniLight3D" parent="Decoration/torch5/fire4" unique_id=620797616]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023591995, 0.85692, -0.0068092346)
 light_color = Color(0.81686354, 0.44989264, 5.7756904e-07, 1)
-light_energy = 19.95081
+light_energy = 20.180365
 shadow_enabled = true
 shadow_blur = 4.0
 omni_range = 17.856636
@@ -1794,7 +1843,7 @@ volume_db = -20.0
 autoplay = true
 
 [node name="ShopCameraTarget" type="Marker3D" parent="." unique_id=1663857319]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -26.31374, 1.5717148, 0)
+transform = Transform3D(-3.9466713e-08, -0.42986512, 0.9028931, -1.879e-08, 0.9028931, 0.42986512, -1, 0, -4.371139e-08, -26.31374, 1.5717148, 0)
 
 [node name="GameOverCameraTarget" type="Marker3D" parent="." unique_id=1627967983]
 transform = Transform3D(0.57357645, 0.09699085, -0.8133897, 0, 0.9929655, 0.11840397, 0.81915206, -0.067913726, 0.56954163, -5.506, 2.074, 2.082)
