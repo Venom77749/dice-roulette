@@ -15,6 +15,7 @@ var ai_poison: int = 0
 # Память для магнита
 var ai_last_buff_effect: String = ""
 var ai_last_buff_value: int = 0
+var ai_actual_gained_hp: int = 0
 
 # Поворот камеры
 var center_rot_y: float = 0.0
@@ -191,17 +192,27 @@ func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
 	if not is_player_turn:
 		return
 		
-	# --- ПРОВЕРКА МОЛОТКА ---
+# --- ПРОВЕРКА МОЛОТКА ---
 	if is_waiting_for_hammer_target:
 		print("Кубик уничтожен молотком!")
 		is_waiting_for_hammer_target = false
+		
+		# Выключаем подсветку молотка у всех кубиков
 		for die in get_tree().get_nodes_in_group("dice"):
 			if die.has_method("set_hammer_highlight"):
 				die.set_hammer_highlight(false)
 				
+		# Удаляем кубик из группы ИЗНАЧАЛЬНО, чтобы метод size() ниже показал честный результат
 		dice_node.remove_from_group("dice")
 		dice_node.queue_free()
-		return 
+		
+		# === ФИКС БАГА: Проверяем, остались ли еще кубики на столе ===
+		var dice_left = get_tree().get_nodes_in_group("dice")
+		if dice_left.size() == 0:
+			print("🔨 Молоток уничтожил последний кубик! Завершаем раунд.")
+			end_round() # Если кубиков больше нет, запускаем конец раунда
+			
+		return # Выходим, ход игрока не тратится, если кубики еще есть
 		
 # --- ПРОВЕРКА ГЛАЗА ---
 	if is_waiting_for_eye_target:
@@ -331,16 +342,23 @@ func shoot_soul_to_scales(start_pos: Vector3, is_player: bool, effect: String, v
 
 func apply_effect(is_player: bool, effect: String, value: int) -> void:
 	var target_name = "Игрок" if is_player else "ИИ"
+	var actual_gained = 0 # Считаем, сколько реально получил ИИ
 	
 	if effect == "neutral":
 		print(target_name, " вытянул пустышку.")
 	elif effect == "heal":
-		if is_player: player_hp = min(player_hp + value, max_hp)
-		else: ai_hp = min(ai_hp + value, max_hp)
+		if is_player: 
+			player_hp = min(player_hp + value, max_hp)
+		else: 
+			var hp_before = ai_hp
+			ai_hp = min(ai_hp + value, max_hp)
+			actual_gained = ai_hp - hp_before # Запоминаем разницу до и после хила!
 		print(target_name, " лечится (выпало: +", value, ")")
 	elif effect == "armor":
 		if is_player: player_armor += value
-		else: ai_armor += value
+		else: 
+			ai_armor += value
+			actual_gained = value # Броня не имеет лимита, берем полное значение
 		print(target_name, " получает броню: +", value)
 	elif effect == "poison":
 		if is_player: player_poison += value 
@@ -361,16 +379,16 @@ func apply_effect(is_player: bool, effect: String, value: int) -> void:
 				actual_damage -= absorbed
 			ai_hp -= actual_damage
 			
-	# --- НАШ НОВЫЙ КОД ДЛЯ ПАМЯТИ МАГНИТА ---
+	# --- ОБНОВЛЕННЫЙ КОД ДЛЯ ПАМЯТИ МАГНИТА ---
 	if not is_player:
-		# Если ИИ получил бафф, запоминаем его
 		if effect == "heal" or effect == "armor":
 			ai_last_buff_effect = effect
 			ai_last_buff_value = value
+			ai_actual_gained_hp = actual_gained # Запоминаем реальный профит ИИ
 		else:
-			# Если ИИ получил урон/яд, воровать нечего
 			ai_last_buff_effect = ""
 			ai_last_buff_value = 0
+			ai_actual_gained_hp = 0
 	# ----------------------------------------
 		
 	update_ui()
@@ -522,17 +540,18 @@ func use_magnet(magnet_node: Node3D) -> void:
 		return
 		
 	var stolen_effect = ai_last_buff_effect
-	var stolen_value = ai_last_buff_value
+	var stolen_value = ai_last_buff_value # Это то, что получит Игрок (полное значение кубика)
+	var ai_loss = ai_actual_gained_hp # Это то, что мы вычитаем у ИИ (только то, что он реально приобрел)
 	
 	print("Игрок ВОРУЕТ у ИИ: ", stolen_effect, " на ", stolen_value)
 	
-	# 1. Отнимаем эффект у ИИ
+	# 1. Отнимаем эффект у ИИ (вычитаем только его реальный профит)
 	if stolen_effect == "heal":
-		ai_hp -= stolen_value
+		ai_hp -= ai_loss
 	elif stolen_effect == "armor":
-		ai_armor = max(0, ai_armor - stolen_value)
+		ai_armor = max(0, ai_armor - ai_loss)
 		
-	# 2. Прибавляем этот же эффект Игроку
+	# 2. Прибавляем ПОЛНОЕ значение Игроку
 	if stolen_effect == "heal":
 		player_hp = min(player_hp + stolen_value, max_hp)
 	elif stolen_effect == "armor":
@@ -541,8 +560,17 @@ func use_magnet(magnet_node: Node3D) -> void:
 	# 3. Очищаем память
 	ai_last_buff_effect = ""
 	ai_last_buff_value = 0
+	ai_actual_gained_hp = 0
 	
 	update_ui()
+	
+	# 4. Запускаем анимацию
+	steal_soul_animation(stolen_effect, stolen_value)
+	
+	if tooltip:
+		tooltip.hide()
+		
+	magnet_node.queue_free()
 	
 	# 4. Запускаем анимацию
 	steal_soul_animation(stolen_effect, stolen_value)
