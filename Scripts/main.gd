@@ -95,7 +95,11 @@ var scale_jolt: float = 0.0
 @export var shop_hammer_scene: PackedScene 
 @export var table_hammer_scene: PackedScene
 
+@export var shop_eye_scene: PackedScene 
+@export var table_eye_scene: PackedScene
+
 var is_waiting_for_hammer_target: bool = false # Ждём ли мы выбора кубика для молотка
+var is_waiting_for_eye_target: bool = false
 
 func _ready() -> void:
 	print("--- Игра началась! ---")
@@ -171,26 +175,37 @@ func _on_button_pressed() -> void:
 func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
 	if not is_player_turn:
 		return
-	
-	# --- ДОБАВЛЕНО ДЛЯ МОЛОТКА ---
+		
+	# --- ПРОВЕРКА МОЛОТКА ---
 	if is_waiting_for_hammer_target:
-		# Режим молотка! Мы просто уничтожаем этот кубик.
-		print("Кубик уничтожен молотком! (Эффект: ", effect, ", Значение: ", value, ")")
-		
-		is_waiting_for_hammer_target = false # Выключаем режим молотка
-		
-		# Выключаем специальную подсветку у остальных кубиков
+		print("🔨 Кубик уничтожен молотком!")
+		is_waiting_for_hammer_target = false
 		for die in get_tree().get_nodes_in_group("dice"):
 			if die.has_method("set_hammer_highlight"):
 				die.set_hammer_highlight(false)
 				
 		dice_node.remove_from_group("dice")
 		dice_node.queue_free()
+		return 
 		
-		# Важный момент: ход игрока НЕ заканчивается! Он должен выбрать другой кубик для хода.
-		print("Выберите кубик для своего хода.")
+# --- ПРОВЕРКА ГЛАЗА ---
+	if is_waiting_for_eye_target:
+		# Для удобства давай выводить в консоль и эффект, и цифру
+		print("👁️ Истинное зрение! Эффект: ", effect, ", Значение: ", value)
+		is_waiting_for_eye_target = false
+		
+		# Выключаем голубую подсветку
+		for die in get_tree().get_nodes_in_group("dice"):
+			if die.has_method("set_eye_highlight"):
+				die.set_eye_highlight(false)
+				
+		# ТЕПЕРЬ ПЕРЕДАЕМ НАСТОЯЩЕЕ ЗНАЧЕНИЕ (value вместо 0)
+		spawn_floating_text(dice_node.global_position, effect, value)
+		
+		# Важно: прерываем функцию, чтобы игрок мог сделать свой настоящий ход
 		return
 		
+# --- ОБЫЧНЫЙ ХОД ---
 	is_player_turn = false
 	
 	if dice_node.is_in_group("dice"):
@@ -463,15 +478,17 @@ func generate_shop() -> void:
 		var chance = randf()
 		var new_item: Node3D = null
 		
-		# 30% шанс на Магнит, 30% на Противоядие, 30% на Молоток, 10% пусто
-		if chance <= 0.30 and shop_magnet_scene:
+		# Распределяем шансы (по 0.2 на каждый предмет)
+		if chance <= 0.20 and shop_magnet_scene:
 			new_item = shop_magnet_scene.instantiate()
-		elif chance > 0.30 and chance <= 0.60 and shop_antidote_scene:
+		elif chance > 0.20 and chance <= 0.40 and shop_antidote_scene:
 			new_item = shop_antidote_scene.instantiate()
-		elif chance > 0.60 and chance <= 0.90 and shop_hammer_scene:
+		elif chance > 0.40 and chance <= 0.60 and shop_hammer_scene:
 			new_item = shop_hammer_scene.instantiate()
+		elif chance > 0.60 and chance <= 0.80 and shop_eye_scene: # ДОБАВЛЕНО ДЛЯ ГЛАЗА
+			new_item = shop_eye_scene.instantiate()
 			
-		# Если предмет заспавнился, ставим его на полку и слушаем клик
+		# Если предмет выпал — ставим его на полку
 		if new_item:
 			slot.add_child(new_item)
 			new_item.position = Vector3.ZERO
@@ -674,6 +691,27 @@ func use_hammer(hammer_node: Node3D) -> void:
 	# Уничтожаем молоток со стола
 	hammer_node.queue_free()
 
+func use_eye(eye_node: Node3D) -> void:
+	if not is_player_turn:
+		print("Сейчас ход ИИ! Глаз использовать нельзя.")
+		return
+		
+	if get_tree().get_nodes_in_group("dice").size() == 0:
+		print("На столе нет кубиков!")
+		eye_node.queue_free()
+		return
+
+	print("ГЛАЗ АКТИВЕН! Выберите кубик, чтобы узнать его секрет.")
+	is_waiting_for_eye_target = true
+	
+	# Включаем голубую подсветку у всех кубиков
+	for die in get_tree().get_nodes_in_group("dice"):
+		if die.has_method("set_eye_highlight"):
+			die.set_eye_highlight(true)
+			
+	# Глаз исчезает со стола
+	eye_node.queue_free()
+
 func _on_shop_item_clicked(item_node: Node3D) -> void:
 	if not is_at_shop:
 		return 
@@ -714,6 +752,11 @@ func _on_shop_item_clicked(item_node: Node3D) -> void:
 			real_item = table_hammer_scene.instantiate()
 			free_slot.add_child(real_item)
 			real_item.clicked.connect(use_hammer.bind(real_item)) # Подключаем функцию применения
+		elif id == "eye" and table_eye_scene:
+			real_item = table_eye_scene.instantiate()
+			free_slot.add_child(real_item)
+			# Подключаем функцию активации Глаза
+			real_item.clicked.connect(use_eye.bind(real_item))
 			
 		# Анимация падения на стол для любого предмета
 		if real_item:

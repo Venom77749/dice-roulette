@@ -12,6 +12,7 @@ var is_hovered: bool = false
 # ДОБАВЛЕНО: Сохраняем цвета, чтобы легко их переключать
 var color_normal: Color = Color(1.0, 0.8, 0.2) # Золотистый
 var color_hammer: Color = Color(0.9, 0.1, 0.2) # Агрессивный красный для молотка
+var color_eye: Color = Color(0.0, 0.8, 1.0)
 
 func _ready() -> void:
 	outline_mat = StandardMaterial3D.new()
@@ -29,11 +30,12 @@ func _on_mouse_entered() -> void:
 	var main_scene = get_tree().current_scene
 	
 	if main_scene:
-		# ДОБАВЛЕНО: Разрешаем подсветку, если сейчас наш ход ИЛИ если мы целимся молотком
 		var is_my_turn = "is_player_turn" in main_scene and main_scene.is_player_turn
 		var is_hammer_time = "is_waiting_for_hammer_target" in main_scene and main_scene.is_waiting_for_hammer_target
+		var is_eye_time = "is_waiting_for_eye_target" in main_scene and main_scene.is_waiting_for_eye_target
 		
-		if is_my_turn or is_hammer_time:
+		# Если хоть один из режимов активен — подсвечиваем кубик
+		if is_my_turn or is_hammer_time or is_eye_time:
 			mesh.material_overlay = outline_mat
 			is_hovered = true
 
@@ -103,5 +105,15 @@ func set_hammer_highlight(is_hammer_active: bool) -> void:
 		outline_mat.albedo_color = color_normal # Возвращаем желтый
 		
 	# Если мышка прямо сейчас лежит на кубике, обновляем оверлей мгновенно
+	if is_hovered:
+		mesh.material_overlay = outline_mat
+
+func set_eye_highlight(is_eye_active: bool) -> void:
+	if is_eye_active:
+		outline_mat.albedo_color = color_eye # Красим обводку в мистический голубой
+	else:
+		outline_mat.albedo_color = color_normal # Возвращаем золотистый
+		
+	# Мгновенно обновляем цвет, если курсор уже на кубике
 	if is_hovered:
 		mesh.material_overlay = outline_mat
