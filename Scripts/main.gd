@@ -197,22 +197,28 @@ func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
 		print("Кубик уничтожен молотком!")
 		is_waiting_for_hammer_target = false
 		
-		# Выключаем подсветку молотка у всех кубиков
+		# Прячем подсказку
+		if tooltip: tooltip.hide()
+		
+		# Выключаем подсветку молотка
 		for die in get_tree().get_nodes_in_group("dice"):
 			if die.has_method("set_hammer_highlight"):
 				die.set_hammer_highlight(false)
 				
-		# Удаляем кубик из группы ИЗНАЧАЛЬНО, чтобы метод size() ниже показал честный результат
+		# Удаляем из группы СРАЗУ (для честной проверки в конце раунда)
 		dice_node.remove_from_group("dice")
-		dice_node.queue_free()
 		
-		# === ФИКС БАГА: Проверяем, остались ли еще кубики на столе ===
+		# === ЗАМЕНЯЕМ rough queue_free() НА КРАСИВУЮ АНИМАЦИЮ ===
+		play_item_selection_animation(dice_node)
+		# ========================================================
+		
+		# Проверяем, остались ли еще кубики
 		var dice_left = get_tree().get_nodes_in_group("dice")
 		if dice_left.size() == 0:
-			print("🔨 Молоток уничтожил последний кубик! Завершаем раунд.")
-			end_round() # Если кубиков больше нет, запускаем конец раунда
+			print("🔨 Последний кубик сломан! Завершаем раунд.")
+			end_round()
 			
-		return # Выходим, ход игрока не тратится, если кубики еще есть
+		return		
 		
 # --- ПРОВЕРКА ГЛАЗА ---
 	if is_waiting_for_eye_target:
@@ -453,6 +459,40 @@ func update_ui() -> void:
 	if money_label:
 		money_label.text = "x " + str(Global.money)
 
+# Универсальная анимация убирания предмета со стола (эффект "схлопывания")
+func play_item_selection_animation(item_node: Node3D) -> void:
+	# 1. Защита от вылетов: проверяем, существует ли еще объект
+	if not is_instance_valid(item_node):
+		return
+		
+	# 2. Создаем Tween для плавных анимаций
+	var tween = create_tween()
+	
+	# Шаг 1: Быстрое увеличение (эффект "пульса перед сжатием")
+	# TRANS_BACK добавляет сочности (эффект отпружинивания)
+	tween.tween_property(item_node, "scale", Vector3(1.3, 1.3, 1.3), 0.1) \
+		.set_trans(Tween.TRANS_BACK) \
+		.set_ease(Tween.EASE_OUT)
+		
+	# Шаг 2: Вращение (запускается ПАРАЛЛЕЛЬНО с увеличением и длится 0.3 секунды)
+	# Объект сделает два полных оборота (720 градусов)
+	tween.parallel().tween_property(item_node, "rotation_degrees:y", item_node.rotation_degrees.y + 720.0, 0.3) \
+		.set_trans(Tween.TRANS_QUAD) \
+		.set_ease(Tween.EASE_IN_OUT)
+		
+	# Шаг 3: Сжатие в ноль 
+	# Вызывается без parallel(), поэтому начнется строго ПОСЛЕ того, как закончится первый шаг (увеличение)
+	tween.tween_property(item_node, "scale", Vector3.ZERO, 0.2) \
+		.set_trans(Tween.TRANS_CUBIC) \
+		.set_ease(Tween.EASE_IN)
+		
+	# Шаг 4: Безопасное удаление объекта из памяти
+	# Сработает только тогда, когда завершатся абсолютно все анимации Твина
+	tween.finished.connect(func():
+		if is_instance_valid(item_node): # Еще одна проверка на всякий случай
+			item_node.queue_free()
+	)
+
 func check_win_condition() -> void:
 	if player_hp <= 0:
 		print("\nПобедил ИИ!")
@@ -540,43 +580,33 @@ func use_magnet(magnet_node: Node3D) -> void:
 		return
 		
 	var stolen_effect = ai_last_buff_effect
-	var stolen_value = ai_last_buff_value # Это то, что получит Игрок (полное значение кубика)
-	var ai_loss = ai_actual_gained_hp # Это то, что мы вычитаем у ИИ (только то, что он реально приобрел)
+	var stolen_value = ai_last_buff_value
+	var ai_loss = ai_actual_gained_hp 
 	
 	print("Игрок ВОРУЕТ у ИИ: ", stolen_effect, " на ", stolen_value)
 	
-	# 1. Отнимаем эффект у ИИ (вычитаем только его реальный профит)
 	if stolen_effect == "heal":
 		ai_hp -= ai_loss
 	elif stolen_effect == "armor":
 		ai_armor = max(0, ai_armor - ai_loss)
 		
-	# 2. Прибавляем ПОЛНОЕ значение Игроку
 	if stolen_effect == "heal":
 		player_hp = min(player_hp + stolen_value, max_hp)
 	elif stolen_effect == "armor":
 		player_armor += stolen_value
 		
-	# 3. Очищаем память
 	ai_last_buff_effect = ""
 	ai_last_buff_value = 0
 	ai_actual_gained_hp = 0
 	
 	update_ui()
-	
-	# 4. Запускаем анимацию
 	steal_soul_animation(stolen_effect, stolen_value)
 	
 	if tooltip:
 		tooltip.hide()
 		
-	magnet_node.queue_free()
-	
-	# 4. Запускаем анимацию
-	steal_soul_animation(stolen_effect, stolen_value)
-	
-	# ДОБАВЛЕНО: Уничтожаем магнит со стола после использования
-	magnet_node.queue_free()
+	# Запускаем красивую анимацию исчезновения (она сама удалит предмет)
+	play_item_selection_animation(magnet_node)
 
 
 func steal_soul_animation(effect: String, value: int) -> void:
@@ -725,38 +755,30 @@ func use_antidote(bottle_node: Node3D) -> void:
 	else:
 		print("Игрок выпивает противоядие! Яд нейтрализован.")
 		player_poison = 0
-		
-		# В качестве бонуса, противоядие может слегка лечить
 		player_hp = min(player_hp + 1, max_hp) 
-		
-		# Спавним твои зеленые партиклы лечения над чашей игрока
 		spawn_particles(left_weight.global_position, "heal")
 	
 	update_ui()
 	
-	# Разбиваем/уничтожаем бутылку после использования
-	bottle_node.queue_free()
+	if tooltip:
+		tooltip.hide()
+		
+	# Запускаем красивую анимацию исчезновения
+	play_item_selection_animation(bottle_node)
 
 func use_hammer(hammer_node: Node3D) -> void:
-	# Проверяем, на чьем мы ходу (нельзя ломать кубики на ходу ИИ)
 	if not is_player_turn:
 		print("Сейчас ход ИИ! Молоток не работает.")
 		return
 		
-	# Проверяем, есть ли вообще кубики на столе
 	if get_tree().get_nodes_in_group("dice").size() == 0:
 		print("На столе нет кубиков, чтобы их ломать!")
-		hammer_node.queue_free() # Возвращаем молоток в инвентарь или ломаем его? Давай уничтожим для баланса
+		play_item_selection_animation(hammer_node)
 		return
 
 	print("МОЛОТОК АКТИВЕН! Выберите кубик на столе для уничтожения.")
-	
-	# Включаем режим ожидания цели
 	is_waiting_for_hammer_target = true
 	
-	# --- ЧАСТЬ ПРО ПОДСВЕТКУ ДРУГИМ ЦВЕТОМ ---
-	# Нам нужно как-то сказать всем кубикам, чтобы они подсветились по-другому.
-	# Давай добавим их в специальную группу или вызовем у них метод.
 	for die in get_tree().get_nodes_in_group("dice"):
 		if die.has_method("set_hammer_highlight"):
 			die.set_hammer_highlight(true)
@@ -764,8 +786,8 @@ func use_hammer(hammer_node: Node3D) -> void:
 	if tooltip:
 		tooltip.hide()
 		
-	# Уничтожаем молоток со стола
-	hammer_node.queue_free()
+	# Запускаем красивую анимацию исчезновения
+	play_item_selection_animation(hammer_node)
 
 func use_eye(eye_node: Node3D) -> void:
 	if not is_player_turn:
@@ -774,13 +796,12 @@ func use_eye(eye_node: Node3D) -> void:
 		
 	if get_tree().get_nodes_in_group("dice").size() == 0:
 		print("На столе нет кубиков!")
-		eye_node.queue_free()
+		play_item_selection_animation(eye_node)
 		return
 
 	print("ГЛАЗ АКТИВЕН! Выберите кубик, чтобы узнать его секрет.")
 	is_waiting_for_eye_target = true
 	
-	# Включаем голубую подсветку у всех кубиков
 	for die in get_tree().get_nodes_in_group("dice"):
 		if die.has_method("set_eye_highlight"):
 			die.set_eye_highlight(true)
@@ -788,8 +809,8 @@ func use_eye(eye_node: Node3D) -> void:
 	if tooltip:
 		tooltip.hide()
 		
-	# Глаз исчезает со стола
-	eye_node.queue_free()
+	# Запускаем красивую анимацию исчезновения
+	play_item_selection_animation(eye_node)
 
 func _on_shop_item_clicked(item_node: Node3D) -> void:
 	var free_slot: Node3D = null
