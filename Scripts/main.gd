@@ -75,6 +75,17 @@ var is_rmb_pressed: bool = false
 	$Table/Player_ItemSpawns/P_Slot4
 ]
 
+@onready var tooltip: PanelContainer = $CanvasLayer/ItemTooltip
+@onready var tooltip_label: Label = $CanvasLayer/ItemTooltip/Label
+
+# Здесь легко менять цены и текст.
+var item_database = {
+	"magnet": {"name": "Магнит", "desc": "Притягивает кубик на ваш выбор.", "price": 1},
+	"antidote": {"name": "Противоядие", "desc": "Очищает кровь от яда.", "price": 1},
+	"hammer": {"name": "Молоток", "desc": "Уничтожает любой кубик.", "price": 1},
+	"eye": {"name": "Глаз Истины", "desc": "Раскрывает эффект кубика.", "price": 2} # Сделаем глаз подороже!
+}
+
 # --- НАСТРОЙКИ UI ДЕНЕГ И МЕШКА ---
 # Теперь мы назначаем их через Инспектор, чтобы ничего не терялось!
 @export var coin_3d_scene: PackedScene
@@ -178,7 +189,7 @@ func _on_dice_selected(dice_node: Node3D, effect: String, value: int) -> void:
 		
 	# --- ПРОВЕРКА МОЛОТКА ---
 	if is_waiting_for_hammer_target:
-		print("🔨 Кубик уничтожен молотком!")
+		print("Кубик уничтожен молотком!")
 		is_waiting_for_hammer_target = false
 		for die in get_tree().get_nodes_in_group("dice"):
 			if die.has_method("set_hammer_highlight"):
@@ -469,6 +480,9 @@ func _process(delta: float) -> void:
 	scale_arm.rotation.x = lerp(scale_arm.rotation.x, target_angle, 6.0 * delta)
 	left_weight.rotation.x = -scale_arm.rotation.x
 	right_weight.rotation.x = -scale_arm.rotation.x
+	
+	if tooltip and tooltip.visible:
+		tooltip.global_position = get_viewport().get_mouse_position() + Vector2(15, 15)
 
 func generate_shop() -> void:
 	for slot in shop_slots:
@@ -489,11 +503,14 @@ func generate_shop() -> void:
 			new_item = shop_eye_scene.instantiate()
 			
 		# Если предмет выпал — ставим его на полку
+# Если предмет заспавнился, ставим его на полку и слушаем клик/наведение
 		if new_item:
 			slot.add_child(new_item)
 			new_item.position = Vector3.ZERO
 			if new_item.has_signal("clicked"):
 				new_item.clicked.connect(_on_shop_item_clicked.bind(new_item))
+			if new_item.has_signal("hovered"):
+				new_item.hovered.connect(_on_item_hovered) # ДОБАВИТЬ ЭТУ СТРОЧКУ
 				
 func use_magnet(magnet_node: Node3D) -> void:
 	if ai_last_buff_effect == "":
@@ -688,6 +705,9 @@ func use_hammer(hammer_node: Node3D) -> void:
 		if die.has_method("set_hammer_highlight"):
 			die.set_hammer_highlight(true)
 			
+	if tooltip:
+		tooltip.hide()
+		
 	# Уничтожаем молоток со стола
 	hammer_node.queue_free()
 
@@ -709,13 +729,13 @@ func use_eye(eye_node: Node3D) -> void:
 		if die.has_method("set_eye_highlight"):
 			die.set_eye_highlight(true)
 			
+	if tooltip:
+		tooltip.hide()
+		
 	# Глаз исчезает со стола
 	eye_node.queue_free()
 
 func _on_shop_item_clicked(item_node: Node3D) -> void:
-	if not is_at_shop:
-		return 
-		
 	var free_slot: Node3D = null
 	for slot in player_slots:
 		if slot.get_child_count() == 0:
@@ -723,45 +743,62 @@ func _on_shop_item_clicked(item_node: Node3D) -> void:
 			break
 			
 	if free_slot == null:
-		print("Нет места на столе!")
+		print("📦 Нет места на столе!")
 		return
 		
-	var item_cost = 1
-	if Global.money >= item_cost:
-		Global.money -= item_cost
-		update_ui()
+	# --- НОВАЯ УМНАЯ ПОКУПКА ---
+	var id = item_node.get("item_id")
+	
+	# Проверяем, есть ли предмет в базе данных
+	if item_database.has(id):
+		var item_cost = item_database[id]["price"]
 		
-		# Узнаем, что именно мы кликнули
-		var id = item_node.get("item_id")
-		print("🛒 Куплен предмет: ", id)
-		
-		item_node.queue_free() # Удаляем с витрины
-		
-		var real_item: Node3D = null
-		
-		# Создаем правильный настольный предмет
-		if id == "magnet" and table_magnet_scene:
-			real_item = table_magnet_scene.instantiate()
-			free_slot.add_child(real_item)
-			real_item.clicked.connect(use_magnet.bind(real_item))
-		elif id == "antidote" and table_antidote_scene:
-			real_item = table_antidote_scene.instantiate()
-			free_slot.add_child(real_item)
-			real_item.clicked.connect(use_antidote.bind(real_item))
-		elif id == "hammer" and table_hammer_scene:
-			real_item = table_hammer_scene.instantiate()
-			free_slot.add_child(real_item)
-			real_item.clicked.connect(use_hammer.bind(real_item)) # Подключаем функцию применения
-		elif id == "eye" and table_eye_scene:
-			real_item = table_eye_scene.instantiate()
-			free_slot.add_child(real_item)
-			# Подключаем функцию активации Глаза
-			real_item.clicked.connect(use_eye.bind(real_item))
+		if Global.money >= item_cost:
+			Global.money -= item_cost
+			update_ui()
+			print("🛒 Куплен предмет: ", id)
 			
-		# Анимация падения на стол для любого предмета
-		if real_item:
-			real_item.position = Vector3(0, 2, 0)
-			var tween = create_tween()
-			tween.tween_property(real_item, "position", Vector3.ZERO, 0.4).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+			item_node.queue_free() # Удаляем с витрины
+			
+			if tooltip:
+				tooltip.hide()
+			
+			var real_item: Node3D = null
+			
+			# Спавним нужный предмет на стол
+			if id == "magnet" and table_magnet_scene:
+				real_item = table_magnet_scene.instantiate()
+				free_slot.add_child(real_item)
+				real_item.clicked.connect(use_magnet.bind(real_item))
+			elif id == "antidote" and table_antidote_scene:
+				real_item = table_antidote_scene.instantiate()
+				free_slot.add_child(real_item)
+				real_item.clicked.connect(use_antidote.bind(real_item))
+			elif id == "hammer" and table_hammer_scene:
+				real_item = table_hammer_scene.instantiate()
+				free_slot.add_child(real_item)
+				real_item.clicked.connect(use_hammer.bind(real_item))
+			elif id == "eye" and table_eye_scene:
+				real_item = table_eye_scene.instantiate()
+				free_slot.add_child(real_item)
+				real_item.clicked.connect(use_eye.bind(real_item))
+				
+			if real_item and real_item.has_signal("hovered"):
+				real_item.hovered.connect(_on_item_hovered)
+				
+			# Анимация падения на стол
+			if real_item:
+				real_item.position = Vector3(0, 2, 0)
+				var tween = create_tween()
+				tween.tween_property(real_item, "position", Vector3.ZERO, 0.4).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+		else:
+			print("❌ Не хватает денег!")
+
+func _on_item_hovered(id: String, is_hovering: bool) -> void:
+	if is_hovering and item_database.has(id):
+		var info = item_database[id]
+		# Собираем красивый текст: Название (Цена монет) \n Описание
+		tooltip_label.text = info["name"] + " (" + str(info["price"]) + " монет)\n" + info["desc"]
+		tooltip.show()
 	else:
-		print("Не хватает денег!")
+		tooltip.hide()
