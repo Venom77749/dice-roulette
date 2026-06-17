@@ -31,6 +31,7 @@ enum DiceType { GOOD, BAD }
 @onready var ai_effects_label: Label = $CanvasLayer/AIEffects
 @onready var roll_button: Button = $CanvasLayer/throw
 @onready var shop_button: Button = $CanvasLayer/ShopButton
+@onready var back_button: Button = $CanvasLayer/BackButton
 
 # --- ОБЪЕКТЫ НА СЦЕНЕ ---
 @onready var scale_arm: Node3D = $весы/Рука
@@ -78,12 +79,11 @@ var is_rmb_pressed: bool = false
 @onready var tooltip: PanelContainer = $CanvasLayer/ItemTooltip
 @onready var tooltip_label: Label = $CanvasLayer/ItemTooltip/Label
 
-# Здесь легко менять цены и текст.
 var item_database = {
-	"magnet": {"name": "Магнит", "desc": "Притягивает кубик на ваш выбор.", "price": 1},
+	"magnet": {"name": "Магнит", "desc": "Притягивает последний эффект протифника на ваш выбор.", "price": 1},
 	"antidote": {"name": "Противоядие", "desc": "Очищает кровь от яда.", "price": 1},
 	"hammer": {"name": "Молоток", "desc": "Уничтожает любой кубик.", "price": 1},
-	"eye": {"name": "Глаз Истины", "desc": "Раскрывает эффект кубика.", "price": 2} # Сделаем глаз подороже!
+	"eye": {"name": "Глаз Истины", "desc": "Раскрывает эффект кубика.", "price": 2}
 }
 
 # --- НАСТРОЙКИ UI ДЕНЕГ И МЕШКА ---
@@ -131,6 +131,10 @@ func _ready() -> void:
 	generate_shop()
 	shop_button.hide()
 	shop_button.pressed.connect(_on_shop_button_pressed)
+	
+	if back_button:
+		back_button.hide()
+		back_button.pressed.connect(_on_back_button_pressed)
 	
 func _on_button_pressed() -> void:
 	is_at_shop = false
@@ -595,6 +599,10 @@ func steal_soul_animation(effect: String, value: int) -> void:
 func _on_shop_button_pressed() -> void:
 	is_at_shop = true
 	shop_button.hide()
+	roll_button.hide() # Прячем кнопку Броска
+	if back_button:
+		back_button.show() # Показываем кнопку Назад
+		
 	generate_shop()
 	print("Добро пожаловать в магазин!")
 	
@@ -603,6 +611,26 @@ func _on_shop_button_pressed() -> void:
 		var tween = create_tween()
 		tween.tween_property(camera, "global_transform", shop_camera_target.global_transform, 1.2)\
 			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+
+func _on_back_button_pressed() -> void:
+	is_at_shop = false
+	if back_button:
+		back_button.hide() # Прячем кнопку Назад
+	
+	shop_button.show() # Снова показываем кнопку магазина
+	roll_button.show() # Возвращаем кнопку Броска
+	
+	print("Возвращаемся к столу.")
+	
+	# Анимируем камеру обратно за стол
+	if camera:
+		var tween = create_tween()
+		tween.set_parallel(true)
+		tween.tween_property(camera, "global_position", default_pos, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(camera, "global_rotation", default_rot, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+		
+		# Как только анимация закончится, возвращаем центральную ось поворота мыши
+		tween.finished.connect(func(): center_rot_y = default_rot.y)
 
 func drop_coins_into_ui_bag() -> void:
 	if not ui_viewport or not ui_bag or not coin_3d_scene:
